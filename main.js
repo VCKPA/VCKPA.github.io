@@ -17,31 +17,6 @@ document.querySelectorAll('.split-text').forEach((el, lineIdx) => {
   });
 });
 
-// ── Custom Cursor ───────────────────────────────
-const cursor = document.getElementById('cursor');
-const dot = document.getElementById('cursorDot');
-let cx = 0, cy = 0, dx = 0, dy = 0;
-
-document.addEventListener('mousemove', e => {
-  dx = e.clientX;
-  dy = e.clientY;
-  dot.style.left = dx + 'px';
-  dot.style.top = dy + 'px';
-});
-
-function animateCursor() {
-  cx += (dx - cx) * 0.12;
-  cy += (dy - cy) * 0.12;
-  cursor.style.left = cx + 'px';
-  cursor.style.top = cy + 'px';
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
-
-document.querySelectorAll('.hoverable, a, button').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-});
 
 // ── Magnetic Elements ───────────────────────────
 document.querySelectorAll('.magnetic').forEach(el => {

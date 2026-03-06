@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rutgers Course Scheduler — New Brunswick</title>
+<style>
+:root {
+  --ru-red: #cc0033;
+  --ru-dark: #1a1a2e;
+  --ru-gray: #2d2d44;
+  --ru-light: #f0f0f5;
+  --ru-accent: #e8364f;
+  --ru-green: #2ecc71;
+  --ru-orange: #f39c12;
+  --ru-blue: #3498db;
+  --shadow: 0 2px 12px rgba(0,0,0,0.15);
+  --radius: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--ru-light);
+  color: #222;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, var(--ru-dark), #16213e);
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 { font-size: 1.4rem; font-weight: 700; }
+header h1 span { color: var(--ru-red); }
+.semester-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.semester-bar select {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.semester-bar select option { color: #222; background: white; }
+.sync-indicator {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.sync-indicator.live { background: rgba(46,204,113,0.2); color: var(--ru-green); }
+.sync-indicator.loading { background: rgba(243,156,18,0.2); color: var(--ru-orange); }
+.sync-indicator.error { background: rgba(204,0,51,0.2); color: var(--ru-accent); }
+.sync-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  display: inline-block;
+}
+.sync-indicator.live .sync-dot { background: var(--ru-green); animation: pulse 2s infinite; }
+.sync-indicator.loading .sync-dot { background: var(--ru-orange); animation: pulse 0.5s infinite; }
+.sync-indicator.error .sync-dot { background: var(--ru-accent); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Layout */
+.app-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 60px);
+}
+
+/* Sidebar */
+.sidebar {
+  background: white;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-section {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+.sidebar-section h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+/* Search */
+.search-box {
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border: 2px solid #e0e0e0;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+.search-box input:focus {
+  outline: none;
+  border-color: var(--ru-red);
+}
+.search-box .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 0.9rem;
+}
+.search-filters {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.search-filters select, .search-filters input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+.search-filters label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* Results */
+.results-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+.result-group {
+  border-bottom: 1px solid #eee;
+}
+.result-course-header {
+  padding: 10px 16px;
+  background: #f8f8fc;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+.result-course-header:hover { background: #f0f0f8; }
+.result-course-header .credits {
+  font-size: 0.75rem;
+  background: var(--ru-blue);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.section-list { display: none; }
+.section-list.open { display: block; }
+.section-item {
+  padding: 8px 16px 8px 24px;
+  border-top: 1px solid #f0f0f0;
+  font-size: 0.83rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+.section-item:hover { background: #fafafa; }
+.section-info { flex: 1; min-width: 0; }
+.section-info .sec-num { font-weight: 600; color: var(--ru-dark); }
+.section-info .sec-time { color: #555; margin-top: 2px; }
+.section-info .sec-instructor { color: #888; font-size: 0.78rem; }
+.section-info .sec-location { color: #aaa; font-size: 0.78rem; }
+.section-status {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.section-status.open { background: #e8f8f0; color: #27ae60; }
+.section-status.closed { background: #fde8e8; color: #c0392b; }
+.add-btn {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.add-btn.add { background: var(--ru-red); color: white; }
+.add-btn.add:hover { background: var(--ru-accent); }
+.add-btn.conflict { background: #f39c12; color: white; }
+.add-btn.remove { background: #e74c3c; color: white; }
+.add-btn.remove:hover { background: #c0392b; }
+
+.no-results {
+  padding: 32px 16px;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+/* My Courses panel */
+.my-courses-list { list-style: none; }
+.my-course-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+}
+.my-course-item:last-child { border-bottom: none; }
+.course-color-dot {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.my-course-info { flex: 1; min-width: 0; }
+.my-course-info .name { font-weight: 600; }
+.my-course-info .detail { font-size: 0.78rem; color: #888; }
+.remove-course-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+.remove-course-btn:hover { color: #e74c3c; background: #fde8e8; }
+
+.credit-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ru-dark);
+  border-top: 1px solid #eee;
+  margin-top: 8px;
+}
+
+/* Conflict banner */
+.conflict-banner {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-top: 10px;
+  font-size: 0.82rem;
+  display: none;
+}
+.conflict-banner.show { display: block; }
+.conflict-banner h3 {
+  font-size: 0.82rem;
+  color: #856404;
+  margin-bottom: 4px;
+}
+.conflict-banner .conflict-detail {
+  color: #856404;
+  margin: 4px 0;
+}
+.conflict-banner .conflict-detail strong { color: #6d3a00; }
+
+/* Main area */
+.main-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.main-area .tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 0 16px;
+}
+.main-area .tab {
+  padding: 12px 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+.main-area .tab:hover { color: #444; }
+.main-area .tab.active { color: var(--ru-red); border-bottom-color: var(--ru-red); }
+
+.tab-content { display: none; flex: 1; overflow: auto; }
+.tab-content.active { display: flex; flex-direction: column; }
+
+/* Calendar */
+.calendar-container {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+}
+.calendar {
+  display: grid;
+  grid-template-columns: 60px repeat(5, 1fr);
+  min-height: 800px;
+  border: 1px solid #ddd;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: white;
+  position: relative;
+}
+.cal-header {
+  background: var(--ru-dark);
+  color: white;
+  padding: 10px 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.cal-time-col {
+  border-right: 1px solid #eee;
+}
+.cal-time-slot {
+  height: 60px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  color: #999;
+  border-bottom: 1px solid #f0f0f0;
+  text-align: right;
+}
+.cal-day-col {
+  position: relative;
+  border-right: 1px solid #f0f0f0;
+}
+.cal-day-col:last-child { border-right: none; }
+.cal-hour-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: #f0f0f0;
+}
+.cal-half-hour-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: #f8f8f8;
+}
+.cal-event {
+  position: absolute;
+  left: 3px; right: 3px;
+  border-radius: 5px;
+  padding: 4px 6px;
+  font-size: 0.72rem;
+  overflow: hidden;
+  cursor: default;
+  border-left: 3px solid;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  z-index: 2;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.cal-event:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 3;
+}
+.cal-event .ev-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal-event .ev-time { opacity: 0.8; margin-top: 1px; }
+.cal-event .ev-loc { opacity: 0.7; margin-top: 1px; font-size: 0.68rem; }
+
+/* Alternatives panel */
+.alternatives-panel {
+  padding: 16px;
+  flex: 1;
+  overflow: auto;
+}
+.alt-group {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.alt-group-header {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: #f8f8fc;
+  border-bottom: 1px solid #eee;
+}
+.alt-section {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.83rem;
+}
+.alt-section:last-child { border-bottom: none; }
+.alt-tag {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+.alt-tag.no-conflict { background: #e8f8f0; color: #27ae60; }
+.alt-tag.has-conflict { background: #fde8e8; color: #c0392b; }
+
+/* Export */
+.export-panel {
+  padding: 16px;
+  flex: 1;
+  overflow: auto;
+}
+.export-card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.export-card h3 { margin-bottom: 8px; font-size: 0.95rem; }
+.export-card p { color: #888; font-size: 0.85rem; margin-bottom: 12px; }
+.export-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.15s;
+}
+.export-btn.primary { background: var(--ru-red); color: white; }
+.export-btn.primary:hover { background: var(--ru-accent); }
+.export-btn.secondary { background: var(--ru-dark); color: white; }
+.export-btn.secondary:hover { background: #2d2d44; }
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.loading-overlay.hidden { display: none; }
+.spinner {
+  width: 48px; height: 48px;
+  border: 4px solid #eee;
+  border-top-color: var(--ru-red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-overlay p { margin-top: 16px; color: #666; font-size: 0.95rem; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar { max-height: 50vh; }
+  .calendar { grid-template-columns: 50px repeat(5, 1fr); min-height: 600px; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #aaa; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span>RU</span> Course Scheduler — New Brunswick</h1>
+  <div class="semester-bar">
+    <select id="semesterSelect"></select>
+    <div id="syncIndicator" class="sync-indicator loading">
+      <span class="sync-dot"></span>
+      <span class="sync-text">Connecting...</span>
+    </div>
+  </div>
+</header>
+
+<div class="app-layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <h2>Search Courses</h2>
+      <div class="search-box">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="searchInput" placeholder="e.g. Intro to CS, 01:198:111, calculus...">
+      </div>
+      <div class="search-filters">
+        <select id="subjectFilter">
+          <option value="">All Subjects</option>
+        </select>
+        <label><input type="checkbox" id="openOnlyFilter"> Open only</label>
+      </div>
+    </div>
+
+    <div class="sidebar-section" id="myCoursesSection">
+      <h2>My Schedule</h2>
+      <ul class="my-courses-list" id="myCoursesList"></ul>
+      <div class="credit-summary" id="creditSummary" style="display:none;">
+        <span>Total Credits:</span>
+        <span id="totalCredits">0</span>
+      </div>
+      <div class="conflict-banner" id="conflictBanner">
+        <h3>&#9888; Time Conflicts Detected</h3>
+        <div id="conflictDetails"></div>
+      </div>
+    </div>
+
+    <div class="results-area" id="resultsArea">
+      <div class="no-results" id="noResults">Search for courses above to get started. Try a subject code (e.g. "198"), course name, or number.</div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main-area">
+    <div class="tabs">
+      <div class="tab active" data-tab="calendar">Weekly Calendar</div>
+      <div class="tab" data-tab="alternatives">Alternatives</div>
+      <div class="tab" data-tab="export">Export</div>
+    </div>
+    <div class="tab-content active" id="tab-calendar">
+      <div class="calendar-container">
+        <div class="calendar" id="calendarGrid"></div>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-alternatives">
+      <div class="alternatives-panel" id="alternativesPanel">
+        <div class="no-results">Add courses to your schedule to see conflict-free alternatives for each.</div>
+      </div>
+    </div>
+    <div class="tab-content" id="tab-export">
+      <div class="export-panel">
+        <div class="export-card">
+          <h3>Export as .ICS (Calendar)</h3>
+          <p>Import your schedule into Google Calendar, Apple Calendar, or Outlook.</p>
+          <button class="export-btn primary" onclick="exportICS()">Download .ics File</button>
+        </div>
+        <div class="export-card">
+          <h3>Copy as Text</h3>
+          <p>Plain-text summary of your schedule for pasting into notes or messages.</p>
+          <button class="export-btn secondary" onclick="copyTextSchedule()">Copy to Clipboard</button>
+        </div>
+        <div class="export-card">
+          <h3>Screenshot</h3>
+          <p>Take a screenshot of your calendar view using your system screenshot tool.</p>
+          <button class="export-btn secondary" onclick="alert('Use Cmd+Shift+4 (Mac) or Win+Shift+S (Windows) to capture the calendar.')">How To</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p id="loadingText">Loading Rutgers course data...</p>
+</div>
+
+<script>
+// ============================================================
+// RUTGERS COURSE SCHEDULER — ENGINE
+// ============================================================
+
+const COLORS = [
+  { bg: '#fde8e8', border: '#e74c3c', text: '#922' },
+  { bg: '#e8f0fd', border: '#3498db', text: '#1a5276' },
+  { bg: '#e8f8f0', border: '#2ecc71', text: '#1a6e3a' },
+  { bg: '#fef9e7', border: '#f1c40f', text: '#7d6608' },
+  { bg: '#f4ecf7', border: '#9b59b6', text: '#6c3483' },
+  { bg: '#fdebd0', border: '#e67e22', text: '#935116' },
+  { bg: '#d5f5e3', border: '#1abc9c', text: '#0e6655' },
+  { bg: '#fadbd8', border: '#e91e63', text: '#880e4f' },
+  { bg: '#d6eaf8', border: '#2980b9', text: '#1b4f72' },
+  { bg: '#e8daef', border: '#8e44ad', text: '#6c3483' },
+];
+
+const DAYS_MAP = { M: 0, T: 1, W: 2, TH: 3, F: 4 };
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const CAL_START = 7; // 7 AM
+const CAL_END = 22;  // 10 PM
+const CAL_HOURS = CAL_END - CAL_START;
+
+let allCourses = [];      // raw from API
+let subjects = [];         // unique subjects
+let mySchedule = [];       // { course, section, colorIdx }
+let colorIdx = 0;
+let currentYear, currentTerm;
+
+// ---- Semester logic ----
+function getSemesters() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth(); // 0-indexed
+  const semesters = [];
+  // Show relevant semesters
+  if (m >= 9) { // Oct-Dec: show current Fall, next Spring
+    semesters.push({ year: y, term: 9, label: `Fall ${y}` });
+    semesters.push({ year: y+1, term: 1, label: `Spring ${y+1}` });
+    semesters.push({ year: y+1, term: 7, label: `Summer ${y+1}` });
+  } else if (m >= 4) { // May-Sep: show current Summer, upcoming Fall
+    semesters.push({ year: y, term: 7, label: `Summer ${y}` });
+    semesters.push({ year: y, term: 9, label: `Fall ${y}` });
+    semesters.push({ year: y, term: 1, label: `Spring ${y}` }); // current spring still useful
+  } else { // Jan-Apr: show current Spring, upcoming Summer/Fall
+    semesters.push({ year: y, term: 1, label: `Spring ${y}` });
+    semesters.push({ year: y, term: 7, label: `Summer ${y}` });
+    semesters.push({ year: y, term: 9, label: `Fall ${y}` });
+  }
+  return semesters;
+}
+
+function initSemesterSelect() {
+  const sel = document.getElementById('semesterSelect');
+  const semesters = getSemesters();
+  semesters.forEach((s, i) => {
+    const opt = document.createElement('option');
+    opt.value = `${s.year}:${s.term}`;
+    opt.textContent = s.label;
+    if (i === 0) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', () => {
+    const [y, t] = sel.value.split(':');
+    currentYear = parseInt(y);
+    currentTerm = parseInt(t);
+    mySchedule = [];
+    colorIdx = 0;
+    loadCourseData();
+  });
+  const first = semesters[0];
+  currentYear = first.year;
+  currentTerm = first.term;
+}
+
+// ---- API ----
+// Rutgers SOC API — need CORS proxy from browser.
+// Try multiple proxies for reliability.
+const PROXIES = [
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  (u) => u, // direct (works if Rutgers adds CORS headers)
+];
+
+async function fetchWithProxies(targetUrl) {
+  for (const mkUrl of PROXIES) {
+    try {
+      const resp = await fetch(mkUrl(targetUrl), { signal: AbortSignal.timeout(15000) });
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    } catch (e) { /* try next proxy */ }
+  }
+  throw new Error('All proxies failed');
+}
+
+async function loadCourseData() {
+  const overlay = document.getElementById('loadingOverlay');
+  const syncInd = document.getElementById('syncIndicator');
+  overlay.classList.remove('hidden');
+  syncInd.className = 'sync-indicator loading';
+  syncInd.querySelector('.sync-text').textContent = 'Syncing...';
+
+  const targetUrl = `https://sis.rutgers.edu/soc/api/courses.json?year=${currentYear}&term=${currentTerm}&campus=NB`;
+
+  try {
+    allCourses = await fetchWithProxies(targetUrl);
+
+    // Build subject list
+    const subSet = new Map();
+    allCourses.forEach(c => {
+      const key = c.subject || c.offeringUnitCode;
+      if (key && !subSet.has(key)) {
+        subSet.set(key, c.subjectDescription || c.offeringUnitTitle || key);
+      }
+    });
+    subjects = [...subSet.entries()].sort((a,b) => a[1].localeCompare(b[1]));
+    populateSubjectFilter();
+
+    syncInd.className = 'sync-indicator live';
+    syncInd.querySelector('.sync-text').textContent = `Live — ${allCourses.length} courses`;
+    syncInd.style.cursor = 'default';
+    syncInd.onclick = null;
+  } catch (err) {
+    console.error('Failed to load course data:', err);
+    syncInd.className = 'sync-indicator error';
+    syncInd.querySelector('.sync-text').textContent = 'Sync failed — click to retry';
+    syncInd.style.cursor = 'pointer';
+    syncInd.onclick = () => loadCourseData();
+  } finally {
+    overlay.classList.add('hidden');
+    renderMyCourses();
+    renderCalendar();
+  }
+}
+
+function populateSubjectFilter() {
+  const sel = document.getElementById('subjectFilter');
+  sel.innerHTML = '<option value="">All Subjects</option>';
+  subjects.forEach(([code, desc]) => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = `${code} — ${desc}`;
+    sel.appendChild(opt);
+  });
+}
+
+// ---- Search ----
+function searchCourses(query) {
+  query = query.trim().toLowerCase();
+  const subjectFilter = document.getElementById('subjectFilter').value;
+  const openOnly = document.getElementById('openOnlyFilter').checked;
+
+  if (!query && !subjectFilter) return [];
+
+  return allCourses.filter(c => {
+    if (subjectFilter && (c.subject || c.offeringUnitCode) !== subjectFilter) return false;
+    if (openOnly && !c.sections?.some(s => s.openStatus)) return false;
+    if (!query) return true;
+
+    const title = (c.title || c.expandedTitle || '').toLowerCase();
+    const subj = (c.subject || c.offeringUnitCode || '').toLowerCase();
+    const courseNum = (c.courseNumber || '').toLowerCase();
+    const courseString = (c.courseString || '').toLowerCase();
+    const fullCode = `${subj}:${courseNum}`.toLowerCase();
+    const offerCode = `${c.offeringUnitCode || ''}:${c.subject || ''}:${c.courseNumber || ''}`.toLowerCase();
+
+    return title.includes(query) ||
+           subj.includes(query) ||
+           courseNum.includes(query) ||
+           courseString.includes(query) ||
+           fullCode.includes(query) ||
+           offerCode.includes(query);
+  }).slice(0, 50);
+}
+
+function renderResults(results) {
+  const area = document.getElementById('resultsArea');
+  const noRes = document.getElementById('noResults');
+
+  // Remove old results
+  area.querySelectorAll('.result-group').forEach(el => el.remove());
+
+  if (results.length === 0) {
+    noRes.style.display = 'block';
+    noRes.textContent = document.getElementById('searchInput').value.trim()
+      ? 'No courses found. Try a different search.'
+      : 'Search for courses above to get started. Try a subject code (e.g. "198"), course name, or number.';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  results.forEach(course => {
+    const group = document.createElement('div');
+    group.className = 'result-group';
+
+    const header = document.createElement('div');
+    header.className = 'result-course-header';
+    const titleCode = `${course.offeringUnitCode || ''}:${course.subject || ''}:${course.courseNumber || ''}`;
+    header.innerHTML = `
+      <span>${titleCode} — ${course.title || course.expandedTitle || 'Untitled'}</span>
+      <span class="credits">${course.credits || '?'} cr</span>
+    `;
+
+    const sectionList = document.createElement('div');
+    sectionList.className = 'section-list';
+
+    header.addEventListener('click', () => {
+      sectionList.classList.toggle('open');
+    });
+
+    (course.sections || []).forEach(sec => {
+      const item = document.createElement('div');
+      item.className = 'section-item';
+
+      const times = (sec.meetingTimes || []).map(mt => {
+        const days = mt.meetingDay || 'TBA';
+        const start = mt.startTimeMilitary || mt.startTime || '';
+        const end = mt.endTimeMilitary || mt.endTime || '';
+        const bldg = mt.buildingCode || '';
+        const room = mt.roomNumber || '';
+        const campus = mt.campusAbbrev || '';
+        const timeStr = start && end ? `${formatTime(start)}-${formatTime(end)}` : 'TBA';
+        const locStr = bldg ? `${bldg} ${room} (${campus})` : '';
+        return { days, timeStr, locStr };
+      });
+
+      const instructors = (sec.instructors || []).map(i => i.name).join(', ') || 'Staff';
+      const isOpen = sec.openStatus;
+      const isAdded = mySchedule.some(s => s.section.index === sec.index);
+      const conflicts = isAdded ? [] : getConflictsForSection(sec);
+      const hasConflict = conflicts.length > 0;
+
+      item.innerHTML = `
+        <div class="section-info">
+          <div class="sec-num">Section ${sec.number || sec.index}</div>
+          <div class="sec-time">${times.map(t => `${t.days} ${t.timeStr}`).join('; ') || 'TBA'}</div>
+          <div class="sec-instructor">${instructors}</div>
+          <div class="sec-location">${times.map(t => t.locStr).filter(Boolean).join('; ')}</div>
+        </div>
+        <span class="section-status ${isOpen ? 'open' : 'closed'}">${isOpen ? 'Open' : 'Closed'}</span>
+      `;
+
+      const btn = document.createElement('button');
+      if (isAdded) {
+        btn.className = 'add-btn remove';
+        btn.textContent = 'Remove';
+        btn.onclick = (e) => { e.stopPropagation(); removeSection(sec.index); renderSearchResults(); };
+      } else if (hasConflict) {
+        btn.className = 'add-btn conflict';
+        btn.title = `Conflicts with: ${conflicts.map(c => c.name).join(', ')}`;
+        btn.textContent = 'Conflict';
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          if (confirm(`This section conflicts with:\n${conflicts.map(c => `• ${c.name}: ${c.detail}`).join('\n')}\n\nAdd anyway?`)) {
+            addSection(course, sec);
+            renderSearchResults();
+          }
+        };
+      } else {
+        btn.className = 'add-btn add';
+        btn.textContent = '+ Add';
+        btn.onclick = (e) => { e.stopPropagation(); addSection(course, sec); renderSearchResults(); };
+      }
+      item.appendChild(btn);
+      sectionList.appendChild(item);
+    });
+
+    group.appendChild(header);
+    group.appendChild(sectionList);
+    area.appendChild(group);
+  });
+}
+
+let searchTimeout;
+function renderSearchResults() {
+  const query = document.getElementById('searchInput').value;
+  const results = searchCourses(query);
+  renderResults(results);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('searchInput').addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(renderSearchResults, 200);
+  });
+  document.getElementById('subjectFilter').addEventListener('change', renderSearchResults);
+  document.getElementById('openOnlyFilter').addEventListener('change', renderSearchResults);
+});
+
+// ---- Time utilities ----
+function formatTime(military) {
+  if (!military) return '';
+  const s = military.padStart(4, '0');
+  let h = parseInt(s.slice(0,2));
+  const m = s.slice(2);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${h}:${m} ${ampm}`;
+}
+
+function militaryToMinutes(mil) {
+  if (!mil) return null;
+  const s = mil.padStart(4, '0');
+  return parseInt(s.slice(0,2)) * 60 + parseInt(s.slice(2));
+}
+
+function parseMeetingDays(dayStr) {
+  if (!dayStr) return [];
+  const days = [];
+  let i = 0;
+  while (i < dayStr.length) {
+    if (i + 1 < dayStr.length && dayStr[i] === 'T' && dayStr[i+1] === 'H') {
+      days.push(3); // Thursday
+      i += 2;
+    } else {
+      const ch = dayStr[i];
+      if (ch === 'M') days.push(0);
+      else if (ch === 'T') days.push(1);
+      else if (ch === 'W') days.push(2);
+      else if (ch === 'F') days.push(4);
+      else if (ch === 'S') {
+        if (i + 1 < dayStr.length && dayStr[i+1] === 'A') { days.push(5); i++; }
+        else if (i + 1 < dayStr.length && dayStr[i+1] === 'U') { days.push(6); i++; }
+        else days.push(5);
+      }
+      i++;
+    }
+  }
+  return days.filter(d => d <= 4); // Only M-F for calendar
+}
+
+function getMeetingBlocks(section) {
+  const blocks = [];
+  (section.meetingTimes || []).forEach(mt => {
+    const days = parseMeetingDays(mt.meetingDay);
+    const startMin = militaryToMinutes(mt.startTimeMilitary || mt.startTime);
+    const endMin = militaryToMinutes(mt.endTimeMilitary || mt.endTime);
+    if (startMin === null || endMin === null) return;
+    days.forEach(d => {
+      blocks.push({ day: d, start: startMin, end: endMin, mt });
+    });
+  });
+  return blocks;
+}
+
+// ---- Conflict detection ----
+function blocksOverlap(a, b) {
+  return a.day === b.day && a.start < b.end && b.start < a.end;
+}
+
+function getConflictsForSection(section) {
+  const newBlocks = getMeetingBlocks(section);
+  const conflicts = [];
+  mySchedule.forEach(entry => {
+    const existingBlocks = getMeetingBlocks(entry.section);
+    for (const nb of newBlocks) {
+      for (const eb of existingBlocks) {
+        if (blocksOverlap(nb, eb)) {
+          const name = `${entry.course.offeringUnitCode}:${entry.course.subject}:${entry.course.courseNumber}`;
+          const detail = `${DAY_NAMES[nb.day]} ${formatTime((nb.start/60|0).toString().padStart(2,'0') + (nb.start%60).toString().padStart(2,'0'))}-${formatTime((nb.end/60|0).toString().padStart(2,'0') + (nb.end%60).toString().padStart(2,'0'))}`;
+          conflicts.push({ name, detail, entry });
+          return; // one conflict per course is enough
+        }
+      }
+    }
+  });
+  return conflicts;
+}
+
+function detectAllConflicts() {
+  const conflicts = [];
+  for (let i = 0; i < mySchedule.length; i++) {
+    for (let j = i + 1; j < mySchedule.length; j++) {
+      const aBlocks = getMeetingBlocks(mySchedule[i].section);
+      const bBlocks = getMeetingBlocks(mySchedule[j].section);
+      for (const ab of aBlocks) {
+        for (const bb of bBlocks) {
+          if (blocksOverlap(ab, bb)) {
+            const aName = `${mySchedule[i].course.subject}:${mySchedule[i].course.courseNumber} Sec ${mySchedule[i].section.number || mySchedule[i].section.index}`;
+            const bName = `${mySchedule[j].course.subject}:${mySchedule[j].course.courseNumber} Sec ${mySchedule[j].section.number || mySchedule[j].section.index}`;
+            conflicts.push({
+              a: aName, b: bName,
+              day: DAY_NAMES[ab.day],
+              detail: `overlap on ${DAY_NAMES[ab.day]}`
+            });
+          }
+        }
+      }
+    }
+  }
+  return conflicts;
+}
+
+// ---- Schedule management ----
+function addSection(course, section) {
+  if (mySchedule.some(s => s.section.index === section.index)) return;
+  mySchedule.push({ course, section, colorIdx: colorIdx % COLORS.length });
+  colorIdx++;
+  renderMyCourses();
+  renderCalendar();
+  renderAlternatives();
+  saveSchedule();
+}
+
+function removeSection(sectionIndex) {
+  mySchedule = mySchedule.filter(s => s.section.index !== sectionIndex);
+  renderMyCourses();
+  renderCalendar();
+  renderAlternatives();
+  saveSchedule();
+}
+
+function renderMyCourses() {
+  const list = document.getElementById('myCoursesList');
+  const summary = document.getElementById('creditSummary');
+  const banner = document.getElementById('conflictBanner');
+  const details = document.getElementById('conflictDetails');
+
+  list.innerHTML = '';
+  if (mySchedule.length === 0) {
+    list.innerHTML = '<li style="color:#aaa;font-size:0.85rem;padding:8px 0;">No courses added yet.</li>';
+    summary.style.display = 'none';
+    banner.classList.remove('show');
+    return;
+  }
+
+  let totalCreds = 0;
+  mySchedule.forEach(entry => {
+    const c = entry.course;
+    const s = entry.section;
+    const color = COLORS[entry.colorIdx];
+    const creds = parseFloat(c.credits) || 0;
+    totalCreds += creds;
+
+    const times = (s.meetingTimes || []).map(mt => {
+      const days = mt.meetingDay || 'TBA';
+      const start = mt.startTimeMilitary || mt.startTime || '';
+      const end = mt.endTimeMilitary || mt.endTime || '';
+      return start && end ? `${days} ${formatTime(start)}-${formatTime(end)}` : 'TBA';
+    }).join('; ');
+
+    const li = document.createElement('li');
+    li.className = 'my-course-item';
+    li.innerHTML = `
+      <span class="course-color-dot" style="background:${color.border}"></span>
+      <div class="my-course-info">
+        <div class="name">${c.subject || c.offeringUnitCode}:${c.courseNumber} Sec ${s.number || s.index}</div>
+        <div class="detail">${times} (${creds} cr)</div>
+      </div>
+    `;
+    const rmBtn = document.createElement('button');
+    rmBtn.className = 'remove-course-btn';
+    rmBtn.innerHTML = '&times;';
+    rmBtn.onclick = () => { removeSection(s.index); renderSearchResults(); };
+    li.appendChild(rmBtn);
+    list.appendChild(li);
+  });
+
+  summary.style.display = 'flex';
+  document.getElementById('totalCredits').textContent = totalCreds;
+
+  // Conflicts
+  const conflicts = detectAllConflicts();
+  if (conflicts.length > 0) {
+    banner.classList.add('show');
+    details.innerHTML = conflicts.map(c =>
+      `<div class="conflict-detail"><strong>${c.a}</strong> and <strong>${c.b}</strong> — ${c.detail}</div>`
+    ).join('');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+// ---- Calendar rendering ----
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+
+  // Header row
+  grid.appendChild(createEl('div', 'cal-header', 'Time'));
+  DAY_NAMES.forEach(d => grid.appendChild(createEl('div', 'cal-header', d)));
+
+  // Time column
+  const timeCol = document.createElement('div');
+  timeCol.className = 'cal-time-col';
+  for (let h = CAL_START; h < CAL_END; h++) {
+    const slot = document.createElement('div');
+    slot.className = 'cal-time-slot';
+    slot.textContent = formatTime(h.toString().padStart(2,'0') + '00');
+    timeCol.appendChild(slot);
+  }
+  grid.appendChild(timeCol);
+
+  // Day columns
+  for (let d = 0; d < 5; d++) {
+    const col = document.createElement('div');
+    col.className = 'cal-day-col';
+    col.style.position = 'relative';
+
+    // Hour lines
+    for (let h = 0; h < CAL_HOURS; h++) {
+      const line = document.createElement('div');
+      line.className = 'cal-hour-line';
+      line.style.top = `${(h / CAL_HOURS) * 100}%`;
+      col.appendChild(line);
+
+      const halfLine = document.createElement('div');
+      halfLine.className = 'cal-half-hour-line';
+      halfLine.style.top = `${((h + 0.5) / CAL_HOURS) * 100}%`;
+      col.appendChild(halfLine);
+    }
+
+    // Events
+    mySchedule.forEach(entry => {
+      const blocks = getMeetingBlocks(entry.section);
+      const color = COLORS[entry.colorIdx];
+      blocks.filter(b => b.day === d).forEach(b => {
+        const topPct = ((b.start - CAL_START * 60) / (CAL_HOURS * 60)) * 100;
+        const heightPct = ((b.end - b.start) / (CAL_HOURS * 60)) * 100;
+
+        const ev = document.createElement('div');
+        ev.className = 'cal-event';
+        ev.style.top = `${topPct}%`;
+        ev.style.height = `${heightPct}%`;
+        ev.style.background = color.bg;
+        ev.style.borderLeftColor = color.border;
+        ev.style.color = color.text;
+
+        const titleCode = `${entry.course.subject || ''}:${entry.course.courseNumber || ''}`;
+        const startT = formatTime((b.start/60|0).toString().padStart(2,'0') + (b.start%60).toString().padStart(2,'0'));
+        const endT = formatTime((b.end/60|0).toString().padStart(2,'0') + (b.end%60).toString().padStart(2,'0'));
+        const loc = b.mt.buildingCode ? `${b.mt.buildingCode} ${b.mt.roomNumber || ''}` : '';
+
+        ev.innerHTML = `
+          <div class="ev-title">${titleCode}</div>
+          <div class="ev-time">${startT} - ${endT}</div>
+          ${loc ? `<div class="ev-loc">${loc}</div>` : ''}
+        `;
+        col.appendChild(ev);
+      });
+    });
+
+    grid.appendChild(col);
+  }
+}
+
+function createEl(tag, cls, text) {
+  const el = document.createElement(tag);
+  el.className = cls;
+  if (text) el.textContent = text;
+  return el;
+}
+
+// ---- Alternatives ----
+function renderAlternatives() {
+  const panel = document.getElementById('alternativesPanel');
+  if (mySchedule.length === 0) {
+    panel.innerHTML = '<div class="no-results">Add courses to your schedule to see conflict-free alternatives for each.</div>';
+    return;
+  }
+
+  panel.innerHTML = '';
+
+  mySchedule.forEach(entry => {
+    // Find the same course in allCourses to get all sections
+    const fullCourse = allCourses.find(c =>
+      (c.subject === entry.course.subject || c.offeringUnitCode === entry.course.offeringUnitCode) &&
+      c.courseNumber === entry.course.courseNumber
+    );
+    if (!fullCourse || !fullCourse.sections) return;
+
+    const otherSections = fullCourse.sections.filter(s => s.index !== entry.section.index);
+    if (otherSections.length === 0) return;
+
+    const group = document.createElement('div');
+    group.className = 'alt-group';
+
+    const header = document.createElement('div');
+    header.className = 'alt-group-header';
+    header.textContent = `${fullCourse.subject || fullCourse.offeringUnitCode}:${fullCourse.courseNumber} — ${fullCourse.title || 'Untitled'} (current: Sec ${entry.section.number || entry.section.index})`;
+    group.appendChild(header);
+
+    otherSections.forEach(sec => {
+      // Check conflicts against everything EXCEPT the current entry
+      const tempSchedule = mySchedule.filter(s => s.section.index !== entry.section.index);
+      const newBlocks = getMeetingBlocks(sec);
+      let hasConflict = false;
+      let conflictWith = '';
+      tempSchedule.forEach(other => {
+        const otherBlocks = getMeetingBlocks(other.section);
+        for (const nb of newBlocks) {
+          for (const ob of otherBlocks) {
+            if (blocksOverlap(nb, ob)) {
+              hasConflict = true;
+              conflictWith = `${other.course.subject}:${other.course.courseNumber}`;
+            }
+          }
+        }
+      });
+
+      const times = (sec.meetingTimes || []).map(mt => {
+        const days = mt.meetingDay || 'TBA';
+        const start = mt.startTimeMilitary || mt.startTime || '';
+        const end = mt.endTimeMilitary || mt.endTime || '';
+        return start && end ? `${days} ${formatTime(start)}-${formatTime(end)}` : 'TBA';
+      }).join('; ');
+      const instructors = (sec.instructors || []).map(i => i.name).join(', ') || 'Staff';
+
+      const div = document.createElement('div');
+      div.className = 'alt-section';
+      div.innerHTML = `
+        <div>
+          <strong>Sec ${sec.number || sec.index}</strong> — ${times}
+          <br><small style="color:#888">${instructors}</small>
+          <span class="section-status ${sec.openStatus ? 'open' : 'closed'}" style="margin-left:8px">${sec.openStatus ? 'Open' : 'Closed'}</span>
+          ${hasConflict
+            ? `<span class="alt-tag has-conflict">Conflicts w/ ${conflictWith}</span>`
+            : `<span class="alt-tag no-conflict">No conflicts</span>`}
+        </div>
+      `;
+      const swapBtn = document.createElement('button');
+      swapBtn.className = `add-btn ${hasConflict ? 'conflict' : 'add'}`;
+      swapBtn.textContent = 'Swap';
+      swapBtn.onclick = () => {
+        if (hasConflict && !confirm(`This section conflicts with ${conflictWith}. Swap anyway?`)) return;
+        removeSection(entry.section.index);
+        addSection(fullCourse, sec);
+        renderAlternatives();
+        renderSearchResults();
+      };
+      div.appendChild(swapBtn);
+      group.appendChild(div);
+    });
+
+    panel.appendChild(group);
+  });
+}
+
+// ---- Export ----
+function exportICS() {
+  if (mySchedule.length === 0) { alert('Add courses first.'); return; }
+
+  // Determine semester date range (approximate)
+  let startDate, endDate;
+  if (currentTerm === 1) { // Spring
+    startDate = new Date(currentYear, 0, 20);
+    endDate = new Date(currentYear, 4, 10);
+  } else if (currentTerm === 7) { // Summer
+    startDate = new Date(currentYear, 4, 26);
+    endDate = new Date(currentYear, 7, 15);
+  } else { // Fall
+    startDate = new Date(currentYear, 8, 3);
+    endDate = new Date(currentYear, 11, 15);
+  }
+
+  const dayMap = { 0: 'MO', 1: 'TU', 2: 'WE', 3: 'TH', 4: 'FR' };
+  let ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//RU Scheduler//EN\n';
+
+  mySchedule.forEach(entry => {
+    const blocks = getMeetingBlocks(entry.section);
+    blocks.forEach(b => {
+      // Find first occurrence of this day
+      const first = new Date(startDate);
+      while (first.getDay() !== (b.day + 1) % 7) first.setDate(first.getDate() + 1); // JS Sun=0
+
+      const sh = Math.floor(b.start / 60);
+      const sm = b.start % 60;
+      const eh = Math.floor(b.end / 60);
+      const em = b.end % 60;
+
+      const dtstart = `${first.getFullYear()}${(first.getMonth()+1).toString().padStart(2,'0')}${first.getDate().toString().padStart(2,'0')}T${sh.toString().padStart(2,'0')}${sm.toString().padStart(2,'0')}00`;
+      const dtend = `${first.getFullYear()}${(first.getMonth()+1).toString().padStart(2,'0')}${first.getDate().toString().padStart(2,'0')}T${eh.toString().padStart(2,'0')}${em.toString().padStart(2,'0')}00`;
+      const until = `${endDate.getFullYear()}${(endDate.getMonth()+1).toString().padStart(2,'0')}${endDate.getDate().toString().padStart(2,'0')}T235900Z`;
+
+      ics += `BEGIN:VEVENT
+DTSTART;TZID=America/New_York:${dtstart}
+DTEND;TZID=America/New_York:${dtend}
+RRULE:FREQ=WEEKLY;BYDAY=${dayMap[b.day]};UNTIL=${until}
+SUMMARY:${entry.course.subject}:${entry.course.courseNumber} - ${entry.course.title || ''}
+LOCATION:${b.mt.buildingCode || ''} ${b.mt.roomNumber || ''}
+DESCRIPTION:Section ${entry.section.number || entry.section.index}
+END:VEVENT
+`;
+    });
+  });
+
+  ics += 'END:VCALENDAR';
+  const blob = new Blob([ics], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `rutgers_schedule_${currentTerm}_${currentYear}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyTextSchedule() {
+  if (mySchedule.length === 0) { alert('Add courses first.'); return; }
+  let text = `Rutgers Schedule — ${document.getElementById('semesterSelect').selectedOptions[0].text}\n${'='.repeat(50)}\n\n`;
+
+  let total = 0;
+  mySchedule.forEach(entry => {
+    const c = entry.course;
+    const s = entry.section;
+    const creds = parseFloat(c.credits) || 0;
+    total += creds;
+    const times = (s.meetingTimes || []).map(mt => {
+      const days = mt.meetingDay || 'TBA';
+      const start = mt.startTimeMilitary || mt.startTime || '';
+      const end = mt.endTimeMilitary || mt.endTime || '';
+      const loc = mt.buildingCode ? `${mt.buildingCode} ${mt.roomNumber || ''}` : '';
+      return `  ${days} ${start && end ? formatTime(start)+'-'+formatTime(end) : 'TBA'} ${loc}`;
+    }).join('\n');
+    const instructors = (s.instructors || []).map(i => i.name).join(', ') || 'Staff';
+    text += `${c.offeringUnitCode}:${c.subject}:${c.courseNumber} — ${c.title || ''}\n`;
+    text += `  Section ${s.number || s.index} | ${creds} credits | ${instructors}\n`;
+    text += times + '\n\n';
+  });
+  text += `Total Credits: ${total}\n`;
+
+  navigator.clipboard.writeText(text).then(() => alert('Schedule copied to clipboard!'));
+}
+
+// ---- LocalStorage persistence ----
+function saveSchedule() {
+  const key = `ru_schedule_${currentYear}_${currentTerm}`;
+  const data = mySchedule.map(e => ({
+    courseSubject: e.course.subject || e.course.offeringUnitCode,
+    courseNumber: e.course.courseNumber,
+    sectionIndex: e.section.index,
+    colorIdx: e.colorIdx
+  }));
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function loadSavedSchedule() {
+  const key = `ru_schedule_${currentYear}_${currentTerm}`;
+  const raw = localStorage.getItem(key);
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    data.forEach(d => {
+      const course = allCourses.find(c =>
+        (c.subject === d.courseSubject || c.offeringUnitCode === d.courseSubject) &&
+        c.courseNumber === d.courseNumber
+      );
+      if (!course) return;
+      const section = (course.sections || []).find(s => s.index === d.sectionIndex);
+      if (!section) return;
+      if (mySchedule.some(s => s.section.index === section.index)) return;
+      mySchedule.push({ course, section, colorIdx: d.colorIdx });
+      colorIdx = Math.max(colorIdx, d.colorIdx + 1);
+    });
+    renderMyCourses();
+    renderCalendar();
+    renderAlternatives();
+  } catch (e) { /* ignore corrupt data */ }
+}
+
+// ---- Tabs ----
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+    });
+  });
+});
+
+// ---- Init ----
+document.addEventListener('DOMContentLoaded', async () => {
+  initSemesterSelect();
+  renderCalendar();
+  await loadCourseData();
+  loadSavedSchedule();
+});
+
+// Auto-refresh every 5 minutes
+setInterval(() => {
+  loadCourseData().then(loadSavedSchedule);
+}, 5 * 60 * 1000);
+</script>
+</body>
+</html>
