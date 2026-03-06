@@ -31,6 +31,101 @@ body {
 
 a { text-decoration: none; color: inherit; }
 
+/* ── Decorative Page Sketches ────────────────── */
+.page-sketches {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.sketch {
+  position: absolute;
+  color: var(--border);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.sketch.drawn { opacity: 1; }
+
+.sketch path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.sketch.drawn path {
+  stroke-dashoffset: 0;
+}
+
+.sketch-swoosh {
+  width: 180px;
+  top: 82vh;
+  right: 8%;
+  color: var(--accent);
+  opacity: 0;
+  filter: drop-shadow(0 0 2px rgba(200, 67, 43, 0.15));
+}
+.sketch-swoosh.drawn { opacity: 0.3; }
+
+.sketch-spiral {
+  width: 70px;
+  top: 140vh;
+  left: 5%;
+  color: #D4A853;
+}
+.sketch-spiral.drawn { opacity: 0.25; }
+
+.sketch-squiggle {
+  width: 200px;
+  bottom: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #6BA3A0;
+}
+.sketch-squiggle.drawn { opacity: 0.22; }
+
+.sketch-arrow {
+  width: 80px;
+  top: 110vh;
+  right: 6%;
+  color: var(--accent);
+}
+.sketch-arrow.drawn { opacity: 0.25; }
+
+.sketch-starburst {
+  width: 50px;
+  top: 60vh;
+  left: 10%;
+  color: #C87B8A;
+}
+.sketch-starburst.drawn { opacity: 0.3; }
+
+.sketch-circle {
+  width: 55px;
+  top: 170vh;
+  right: 12%;
+  color: #D4A853;
+}
+.sketch-circle.drawn { opacity: 0.25; }
+
+.sketch-dots {
+  width: 90px;
+  top: 45vh;
+  right: 15%;
+  color: var(--text-light);
+}
+.sketch-dots.drawn { opacity: 0.2; }
+
+.sketch-wave {
+  width: 160px;
+  top: 195vh;
+  left: 8%;
+  color: #6BA3A0;
+}
+.sketch-wave.drawn { opacity: 0.25; }
+
 /* ── Film Grain Overlay ──────────────────────── */
 .grain {
   position: fixed;
@@ -438,7 +533,7 @@ a { text-decoration: none; color: inherit; }
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .sprinkle {
@@ -447,10 +542,22 @@ a { text-decoration: none; color: inherit; }
   top: var(--y);
   font-size: var(--size);
   color: var(--accent);
-  opacity: 0.18;
+  opacity: 0.45;
   transform: rotate(var(--rot)) translateY(0);
-  transition: opacity 0.4s ease;
   will-change: transform;
+  animation: sprinkle-float 4s ease-in-out infinite alternate;
+  animation-delay: var(--delay);
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.sp-accent { color: var(--accent); }
+.sp-gold { color: #D4A853; }
+.sp-rose { color: #C87B8A; }
+.sp-teal { color: #6BA3A0; }
+
+@keyframes sprinkle-float {
+  0% { translate: 0 0; }
+  100% { translate: 8px -12px; }
 }
 
 /* ── Orbit Dots ──────────────────────────────── */

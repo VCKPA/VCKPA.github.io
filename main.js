@@ -86,10 +86,12 @@ function updateSprinkles() {
   sprinkles.forEach(sp => {
     const speed = parseFloat(sp.style.getPropertyValue('--speed'));
     const rot = sp.style.getPropertyValue('--rot');
-    const yOffset = progress * speed * 800;
-    const extraRot = progress * speed * 180;
-    sp.style.transform = `rotate(calc(${rot} + ${extraRot}deg)) translateY(${yOffset}px)`;
-    sp.style.opacity = 0.12 + progress * 0.14;
+    const yOffset = progress * speed * 1200;
+    const xDrift = Math.sin(progress * Math.PI * 2 + speed * 10) * speed * 120;
+    const extraRot = progress * speed * 360;
+    const scale = 1 + progress * Math.abs(speed) * 0.8;
+    sp.style.transform = `rotate(calc(${rot} + ${extraRot}deg)) translate(${xDrift}px, ${yOffset}px) scale(${scale})`;
+    sp.style.opacity = 0.35 + progress * 0.35;
   });
 }
 
@@ -153,3 +155,17 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 revealEls.forEach(el => observer.observe(el));
+
+// ── Sketch draw-on-scroll ──────────────────────
+const sketches = document.querySelectorAll('.sketch');
+
+const sketchObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('drawn');
+      sketchObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+sketches.forEach(el => sketchObserver.observe(el));
