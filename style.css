@@ -432,6 +432,27 @@ a { text-decoration: none; color: inherit; }
   overflow: hidden;
 }
 
+/* ── Sprinkles ───────────────────────────────── */
+.sprinkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sprinkle {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  font-size: var(--size);
+  color: var(--accent);
+  opacity: 0.18;
+  transform: rotate(var(--rot)) translateY(0);
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+
 /* ── Orbit Dots ──────────────────────────────── */
 .carousel-orbit {
   position: absolute;

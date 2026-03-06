@@ -73,6 +73,26 @@ function setActiveCard(index) {
   });
 }
 
+// ── Sprinkle parallax ────────────────────────────
+const sprinkles = document.querySelectorAll('.sprinkle');
+
+function updateSprinkles() {
+  if (!cWrap) return;
+  const wrapTop = cWrap.offsetTop;
+  const wrapHeight = cWrap.offsetHeight;
+  const scrolled = window.scrollY - wrapTop;
+  const progress = Math.max(0, Math.min(1, scrolled / (wrapHeight - window.innerHeight)));
+
+  sprinkles.forEach(sp => {
+    const speed = parseFloat(sp.style.getPropertyValue('--speed'));
+    const rot = sp.style.getPropertyValue('--rot');
+    const yOffset = progress * speed * 800;
+    const extraRot = progress * speed * 180;
+    sp.style.transform = `rotate(calc(${rot} + ${extraRot}deg)) translateY(${yOffset}px)`;
+    sp.style.opacity = 0.12 + progress * 0.14;
+  });
+}
+
 function updateCarousel() {
   if (!cWrap) return;
 
@@ -83,12 +103,16 @@ function updateCarousel() {
   const scrolled = window.scrollY - wrapTop;
   const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
 
-  const slideIndex = Math.min(
-    totalCards - 1,
-    Math.floor(progress * totalCards)
-  );
+  // Discrete snapping: each card gets an equal slice with a dead zone in the middle
+  const sliceSize = 1 / totalCards;
+  let slideIndex = 0;
+  for (let i = 0; i < totalCards; i++) {
+    if (progress >= i * sliceSize) slideIndex = i;
+  }
+  slideIndex = Math.min(totalCards - 1, slideIndex);
 
   setActiveCard(slideIndex);
+  updateSprinkles();
 }
 
 window.addEventListener('scroll', updateCarousel, { passive: true });
