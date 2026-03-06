@@ -506,7 +506,7 @@ header h1 span { color: var(--ru-red); }
 <body>
 
 <header>
-  <h1><span>RU</span> Course Scheduler — New Brunswick</h1>
+  <h1><span>RU</span> Course Scheduler — New Brunswick <span style="font-size:0.55rem;font-weight:400;opacity:0.35;margin-left:6px;">by Victoria Komperda</span></h1>
   <div class="semester-bar">
     <select id="semesterSelect"></select>
     <div id="syncIndicator" class="sync-indicator loading">
@@ -1450,17 +1450,35 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ---- Preload other semesters in background ----
+async function preloadOtherSemesters() {
+  const semesters = getSemesters();
+  for (const s of semesters) {
+    if (s.year === currentYear && s.term === currentTerm) continue;
+    const key = `${s.year}_${s.term}`;
+    const cached = await getCachedCourses(key);
+    if (cached && cached.courses && (Date.now() - cached.ts) < CACHE_MAX_AGE) continue;
+    try {
+      const url = `https://sis.rutgers.edu/soc/api/courses.json?year=${s.year}&term=${s.term}&campus=NB`;
+      const data = await fetchWithProxies(url);
+      await setCachedCourses(key, data);
+    } catch { /* non-critical */ }
+  }
+}
+
 // ---- Init ----
 document.addEventListener('DOMContentLoaded', async () => {
   initSemesterSelect();
   renderCalendar();
   await loadCourseData();
   loadSavedSchedule();
+  // Preload other semesters so switching is instant
+  preloadOtherSemesters();
 });
 
 // Auto-refresh every 5 minutes
 setInterval(() => {
-  loadCourseData().then(loadSavedSchedule);
+  loadCourseData();
 }, 5 * 60 * 1000);
 </script>
 </body>
