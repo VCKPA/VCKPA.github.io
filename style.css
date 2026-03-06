@@ -500,21 +500,21 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Fluid Carousel ──────────────────────────── */
 .carousel-wrap {
-  height: 200vh;
+  height: 160vh;
   position: relative;
 }
 
 .carousel-sticky {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 70vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .carousel-header {
-  padding: 32px clamp(24px, 5vw, 64px) 0;
+  padding: 24px clamp(24px, 5vw, 64px) 0;
   flex-shrink: 0;
 }
 
