@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photography — Victoria Komperda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="photography.css">
+</head>
+<body class="photo-page">
+
+  <!-- Grain Overlay -->
+  <div class="grain"></div>
+
+  <!-- Navigation -->
+  <nav class="nav scrolled" id="nav">
+    <a href="index.html" class="nav-logo">VK</a>
+    <div class="nav-links">
+      <a href="index.html#work" class="nav-link">Work</a>
+      <a href="index.html#about" class="nav-link">About</a>
+      <a href="photography.html" class="nav-link nav-link-active">Photo</a>
+      <a href="index.html#contact" class="nav-link">Contact</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#work" class="mobile-link">Work</a>
+    <a href="index.html#about" class="mobile-link">About</a>
+    <a href="photography.html" class="mobile-link">Photo</a>
+    <a href="index.html#contact" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- Hero -->
+  <header class="photo-hero">
+    <div class="photo-hero-content">
+      <span class="photo-hero-label">Through My Lens</span>
+      <h1 class="photo-hero-title">Photo<em>graphy</em></h1>
+      <p class="photo-hero-sub">Moments frozen in time &mdash; exploring light, texture, and the stories in between.</p>
+    </div>
+  </header>
+
+  <!-- Gallery -->
+  <section class="gallery-section">
+
+    <!-- Filter Tags -->
+    <div class="gallery-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="portrait">Portraits</button>
+      <button class="filter-btn" data-filter="street">Street</button>
+      <button class="filter-btn" data-filter="nature">Nature</button>
+      <button class="filter-btn" data-filter="architecture">Architecture</button>
+    </div>
+
+    <!-- Masonry Grid -->
+    <div class="gallery-grid" id="galleryGrid">
+
+      <div class="gallery-item gallery-item-tall" data-category="portrait">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #C4BFB8, #9A9590);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Portrait Study I</span>
+          <span class="gallery-meta">Portraits</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="street">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #B8C4C4, #8A9E9E);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Urban Rhythm</span>
+          <span class="gallery-meta">Street</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="nature">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #C4C8B8, #9AA08A);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Morning Dew</span>
+          <span class="gallery-meta">Nature</span>
+        </div>
+      </div>
+
+      <div class="gallery-item gallery-item-wide" data-category="architecture">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #B8B8C4, #8A8A9E);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Concrete &amp; Glass</span>
+          <span class="gallery-meta">Architecture</span>
+        </div>
+      </div>
+
+      <div class="gallery-item gallery-item-tall" data-category="nature">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #B5C4B8, #8A9E90);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Golden Hour</span>
+          <span class="gallery-meta">Nature</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="portrait">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #C4B8B8, #9E8A8A);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Portrait Study II</span>
+          <span class="gallery-meta">Portraits</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="street">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #BAB8C4, #908A9E);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Late Night Walk</span>
+          <span class="gallery-meta">Street</span>
+        </div>
+      </div>
+
+      <div class="gallery-item gallery-item-wide" data-category="portrait">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #C4C0B8, #9E9A90);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">In Motion</span>
+          <span class="gallery-meta">Portraits</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="architecture">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #B8BFC4, #8A949E);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Lines &amp; Shadows</span>
+          <span class="gallery-meta">Architecture</span>
+        </div>
+      </div>
+
+      <div class="gallery-item gallery-item-tall" data-category="street">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #C0B8C4, #948A9E);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Passing By</span>
+          <span class="gallery-meta">Street</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="nature">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #B8C4BA, #8A9E8E);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">After Rain</span>
+          <span class="gallery-meta">Nature</span>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-category="architecture">
+        <div class="gallery-img" style="background: linear-gradient(160deg, #C4C4B8, #9E9E8A);"></div>
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Symmetry</span>
+          <span class="gallery-meta">Architecture</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose">&times;</button>
+    <div class="lightbox-content" id="lightboxContent"></div>
+    <div class="lightbox-info">
+      <span class="lightbox-caption" id="lightboxCaption"></span>
+      <span class="lightbox-meta" id="lightboxMeta"></span>
+    </div>
+    <button class="lightbox-prev" id="lightboxPrev">&larr;</button>
+    <button class="lightbox-next" id="lightboxNext">&rarr;</button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>Designed by Victoria Komperda &copy; 2025</span>
+  </footer>
+
+  <script src="photography.js"></script>
+</body>
+</html>
