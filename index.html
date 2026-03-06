@@ -89,63 +89,67 @@
     </div>
   </div>
 
-  <!-- Selected Work — Horizontal Scroll Lock -->
-  <div class="hscroll-wrap" id="hscrollWrap">
-    <div class="hscroll-sticky">
-      <div class="section-header hscroll-header">
+  <!-- Selected Work — Fluid Carousel -->
+  <div class="carousel-wrap" id="carouselWrap">
+    <div class="carousel-sticky">
+      <div class="section-header carousel-header">
         <span class="section-number">01</span>
         <h2 class="section-title">Selected Work</h2>
         <div class="section-line"></div>
-        <span class="hscroll-counter"><span id="hscrollCurrent">01</span> / <span id="hscrollTotal">03</span></span>
       </div>
-      <div class="hscroll-track" id="hscrollTrack">
 
-        <!-- Slide 1: Zenith Vintage -->
-        <div class="hscroll-slide">
-          <a href="https://zenithvintage.org/" target="_blank" rel="noopener" class="hslide-card hslide-dark">
-            <div class="hslide-bg" style="background: linear-gradient(135deg, #2A2520, #1A1714);"></div>
-            <div class="hslide-content">
-              <span class="hslide-num">01</span>
+      <div class="carousel-stage">
+        <!-- Orbit dots (small circles) -->
+        <div class="carousel-orbit" id="carouselOrbit">
+          <div class="orbit-dot" data-index="0" style="--dot-bg: linear-gradient(135deg, #2A2520, #1A1714);">
+            <span class="orbit-dot-label">01</span>
+          </div>
+          <div class="orbit-dot" data-index="1" style="--dot-bg: linear-gradient(135deg, #D3DEE8, #B8C8D8);">
+            <span class="orbit-dot-label">02</span>
+          </div>
+          <div class="orbit-dot" data-index="2" style="--dot-bg: linear-gradient(135deg, #E8D3D8, #D8B8C2);">
+            <span class="orbit-dot-label">03</span>
+          </div>
+        </div>
+
+        <!-- Expanded card (center stage) -->
+        <div class="carousel-cards" id="carouselCards">
+          <a href="https://zenithvintage.org/" target="_blank" rel="noopener"
+             class="ccard ccard-dark" data-index="0"
+             style="--card-bg: linear-gradient(135deg, #2A2520, #1A1714);">
+            <div class="ccard-bg"></div>
+            <div class="ccard-content">
               <span class="project-tag"><i class="ti ti-world"></i> Web Design &mdash; Live Site</span>
-              <h3 class="hslide-title">Zenith Vintage</h3>
-              <p class="hslide-desc">A nostalgic digital experience celebrating the golden age of crooners. Brand identity, web design, and front-end development.</p>
-              <span class="hslide-link">Visit Site <i class="ti ti-arrow-right"></i></span>
+              <h3 class="ccard-title">Zenith Vintage</h3>
+              <p class="ccard-desc">A nostalgic digital experience celebrating the golden age of crooners.</p>
+              <span class="ccard-link">Visit Site <i class="ti ti-arrow-right"></i></span>
             </div>
           </a>
-        </div>
 
-        <!-- Slide 2: Rutgers Course Scheduler -->
-        <div class="hscroll-slide">
-          <a href="https://vckpa.github.io/scheduler/" target="_blank" rel="noopener" class="hslide-card">
-            <div class="hslide-bg" style="background: linear-gradient(135deg, #D3DEE8, #B8C8D8);"></div>
-            <div class="hslide-content">
-              <span class="hslide-num">02</span>
+          <a href="https://vckpa.github.io/scheduler/" target="_blank" rel="noopener"
+             class="ccard" data-index="1"
+             style="--card-bg: linear-gradient(135deg, #D3DEE8, #B8C8D8);">
+            <div class="ccard-bg"></div>
+            <div class="ccard-content">
               <span class="project-tag"><i class="ti ti-device-mobile"></i> Mobile App &mdash; Case Study</span>
-              <h3 class="hslide-title">Rutgers Course Scheduler</h3>
-              <p class="hslide-desc">Rethinking how students plan their semesters with smart conflict detection and drag-and-drop scheduling.</p>
-              <span class="hslide-link">View Project <i class="ti ti-arrow-right"></i></span>
+              <h3 class="ccard-title">Rutgers Course Scheduler</h3>
+              <p class="ccard-desc">Rethinking how students plan their semesters with smart scheduling.</p>
+              <span class="ccard-link">View Project <i class="ti ti-arrow-right"></i></span>
             </div>
           </a>
-        </div>
 
-        <!-- Slide 3: Yanylin.me -->
-        <div class="hscroll-slide">
-          <a href="https://yanylin.me" target="_blank" rel="noopener" class="hslide-card">
-            <div class="hslide-bg" style="background: linear-gradient(135deg, #E8D3D8, #D8B8C2);"></div>
-            <div class="hslide-content">
-              <span class="hslide-num">03</span>
+          <a href="https://yanylin.me" target="_blank" rel="noopener"
+             class="ccard" data-index="2"
+             style="--card-bg: linear-gradient(135deg, #E8D3D8, #D8B8C2);">
+            <div class="ccard-bg"></div>
+            <div class="ccard-content">
               <span class="project-tag"><i class="ti ti-world"></i> Client Website &mdash; Web Design</span>
-              <h3 class="hslide-title">Client Portfolio</h3>
-              <p class="hslide-desc">A personal portfolio site designed and developed from concept to launch.</p>
-              <span class="hslide-link">Visit Site <i class="ti ti-arrow-right"></i></span>
+              <h3 class="ccard-title">Client Portfolio</h3>
+              <p class="ccard-desc">A personal portfolio site designed and developed from concept to launch.</p>
+              <span class="ccard-link">Visit Site <i class="ti ti-arrow-right"></i></span>
             </div>
           </a>
         </div>
-
-      </div>
-      <!-- Progress bar -->
-      <div class="hscroll-progress">
-        <div class="hscroll-progress-fill" id="hscrollProgress"></div>
       </div>
     </div>
   </div>

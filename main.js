@@ -46,49 +46,53 @@ menu.querySelectorAll('.mobile-link').forEach(link => {
   });
 });
 
-// ── Horizontal Scroll-Lock ──────────────────────
-const hWrap = document.getElementById('hscrollWrap');
-const hTrack = document.getElementById('hscrollTrack');
-const hCurrent = document.getElementById('hscrollCurrent');
-const hProgress = document.getElementById('hscrollProgress');
-const slides = document.querySelectorAll('.hscroll-slide');
-const totalSlides = slides.length;
+// ── Fluid Carousel ──────────────────────────────
+const cWrap = document.getElementById('carouselWrap');
+const cards = document.querySelectorAll('.ccard');
+const dots = document.querySelectorAll('.orbit-dot');
+const totalCards = cards.length;
+let currentCard = -1;
 
-function updateHScroll() {
-  if (!hWrap) return;
+function setActiveCard(index) {
+  if (index === currentCard) return;
+  currentCard = index;
 
-  const wrapTop = hWrap.offsetTop;
-  const wrapHeight = hWrap.offsetHeight;
+  cards.forEach((card, i) => {
+    card.classList.remove('active', 'prev', 'next');
+    if (i === index) {
+      card.classList.add('active');
+    } else if (i === index - 1 || (index === 0 && i === totalCards - 1)) {
+      card.classList.add('prev');
+    } else if (i === index + 1 || (index === totalCards - 1 && i === 0)) {
+      card.classList.add('next');
+    }
+  });
+
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+}
+
+function updateCarousel() {
+  if (!cWrap) return;
+
+  const wrapTop = cWrap.offsetTop;
+  const wrapHeight = cWrap.offsetHeight;
   const viewH = window.innerHeight;
   const scrollableDistance = wrapHeight - viewH;
   const scrolled = window.scrollY - wrapTop;
   const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
 
-  // Which slide are we on
   const slideIndex = Math.min(
-    totalSlides - 1,
-    Math.floor(progress * totalSlides)
+    totalCards - 1,
+    Math.floor(progress * totalCards)
   );
 
-  // Smooth translate
-  const translateX = progress * (totalSlides - 1) * -100;
-  const clampedX = Math.max(-(totalSlides - 1) * 100, Math.min(0, translateX));
-  hTrack.style.transform = `translateX(${clampedX}vw)`;
-
-  // Active slide class for scale animation
-  slides.forEach((slide, i) => {
-    slide.classList.toggle('active', i === slideIndex);
-  });
-
-  // Update counter
-  hCurrent.textContent = String(slideIndex + 1).padStart(2, '0');
-
-  // Update progress bar
-  hProgress.style.width = `${((slideIndex + 1) / totalSlides) * 100}%`;
+  setActiveCard(slideIndex);
 }
 
-window.addEventListener('scroll', updateHScroll, { passive: true });
-updateHScroll();
+window.addEventListener('scroll', updateCarousel, { passive: true });
+setActiveCard(0);
 
 // ── Parallax on scroll ──────────────────────────
 const parallaxEls = document.querySelectorAll('[data-parallax]');
@@ -109,7 +113,7 @@ updateParallax();
 // ── Scroll reveal ───────────────────────────────
 const revealEls = document.querySelectorAll(
   '.about-grid, .about-headline, .about-body, .about-details, ' +
-  '.section-header, .spotify-container, .contact-inner'
+  '.section-header:not(.carousel-header), .spotify-container, .contact-inner'
 );
 
 revealEls.forEach(el => el.classList.add('reveal'));

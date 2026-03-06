@@ -403,13 +403,13 @@ a { text-decoration: none; color: inherit; }
   background: var(--border);
 }
 
-/* ── Horizontal Scroll-Lock Section ──────────── */
-.hscroll-wrap {
-  height: 300vh; /* 100vh per slide */
+/* ── Fluid Carousel ──────────────────────────── */
+.carousel-wrap {
+  height: 300vh;
   position: relative;
 }
 
-.hscroll-sticky {
+.carousel-sticky {
   position: sticky;
   top: 0;
   height: 100vh;
@@ -418,95 +418,136 @@ a { text-decoration: none; color: inherit; }
   flex-direction: column;
 }
 
-.hscroll-header {
+.carousel-header {
   padding: 32px clamp(24px, 5vw, 64px) 0;
   flex-shrink: 0;
 }
 
-.hscroll-counter {
-  font-family: 'Space Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: var(--text-light);
-  white-space: nowrap;
-}
-
-.hscroll-track {
-  display: flex;
+.carousel-stage {
   flex: 1;
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.hscroll-slide {
-  min-width: 100vw;
-  padding: 32px clamp(48px, 10vw, 160px) 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  padding: 0 clamp(24px, 5vw, 64px) 40px;
 }
 
-.hslide-card {
+/* ── Orbit Dots (small circles) ──────────────── */
+.carousel-orbit {
+  position: absolute;
   display: flex;
+  gap: 16px;
+  z-index: 10;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.orbit-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--dot-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  opacity: 0.4;
+  transform: scale(0.8);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.orbit-dot.active {
+  opacity: 1;
+  transform: scale(1.15);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+}
+
+.orbit-dot-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+/* ── Cards ───────────────────────────────────── */
+.carousel-cards {
   position: relative;
   width: 100%;
-  max-width: 800px;
-  max-height: 480px;
-  border-radius: var(--radius);
+  max-width: 560px;
+  height: 340px;
+}
+
+.ccard {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
   overflow: hidden;
   text-decoration: none;
   color: var(--text);
-  transform: scale(0.85);
-  opacity: 0.4;
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-              box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-              opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  transform: scale(0.12);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
 }
 
-.hscroll-slide.active .hslide-card {
+.ccard.active {
+  border-radius: var(--radius);
   transform: scale(1);
   opacity: 1;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.12);
 }
 
-.hslide-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 32px 64px rgba(0,0,0,0.1);
+.ccard.prev {
+  border-radius: 50%;
+  transform: scale(0.15) translateX(-400px);
+  opacity: 0.3;
 }
 
-.hslide-bg {
+.ccard.next {
+  border-radius: 50%;
+  transform: scale(0.15) translateX(400px);
+  opacity: 0.3;
+}
+
+.ccard:hover {
+  box-shadow: 0 32px 80px rgba(0,0,0,0.16);
+}
+
+.ccard-bg {
   position: absolute;
   inset: 0;
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  background: var(--card-bg);
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.hslide-card:hover .hslide-bg {
-  transform: scale(1.02);
+.ccard:hover .ccard-bg {
+  transform: scale(1.03);
 }
 
-.hslide-content {
+.ccard-content {
   position: relative;
   z-index: 2;
-  padding: clamp(36px, 5vw, 64px);
+  padding: 36px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   width: 100%;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
 }
 
-.hslide-dark .hslide-content { color: #F4F0EC; }
-.hslide-dark .project-tag { color: rgba(255,255,255,0.5); }
-
-.hslide-num {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(80px, 12vw, 160px);
-  font-weight: 600;
-  position: absolute;
-  top: 24px; right: 40px;
-  line-height: 1;
-  opacity: 0.04;
-  color: currentColor;
+.ccard.active .ccard-content {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.hslide-dark .hslide-num { color: #fff; }
+.ccard-dark .ccard-content { color: #F4F0EC; }
+.ccard-dark .project-tag { color: rgba(255,255,255,0.5); }
 
 .project-tag {
   font-family: 'Space Mono', monospace;
@@ -516,51 +557,33 @@ a { text-decoration: none; color: inherit; }
   color: var(--text-light);
 }
 
-.hslide-title {
+.ccard-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5vw, 56px);
+  font-size: clamp(24px, 3.5vw, 36px);
   font-weight: 400;
-  margin: 12px 0 16px;
-  line-height: 1.15;
+  margin: 10px 0 10px;
+  line-height: 1.2;
 }
 
-.hslide-desc {
-  font-size: 16px;
+.ccard-desc {
+  font-size: 14px;
   opacity: 0.6;
-  max-width: 480px;
-  line-height: 1.7;
-  margin-bottom: 24px;
+  max-width: 400px;
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
-.hslide-link {
+.ccard-link {
   font-family: 'Space Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--accent);
   transition: letter-spacing 0.3s ease;
 }
 
-.hslide-card:hover .hslide-link {
+.ccard:hover .ccard-link {
   letter-spacing: 4px;
-}
-
-/* Progress bar */
-.hscroll-progress {
-  height: 2px;
-  background: var(--border);
-  margin: 0 clamp(24px, 5vw, 64px) 24px;
-  border-radius: 2px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.hscroll-progress-fill {
-  height: 100%;
-  width: 25%;
-  background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* ── About ───────────────────────────────────── */
