@@ -140,7 +140,7 @@ updateParallax();
 // ── Scroll reveal ───────────────────────────────
 const revealEls = document.querySelectorAll(
   '.about-grid, .about-headline, .about-body, .about-details, ' +
-  '.section-header:not(.carousel-header), .spotify-container, .contact-inner'
+  '.section-header:not(.carousel-header), .about-spotify, .contact-inner'
 );
 
 revealEls.forEach(el => el.classList.add('reveal'));

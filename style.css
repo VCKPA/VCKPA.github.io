@@ -810,9 +810,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ── Spotify ─────────────────────────────────── */
-.section-spotify { padding: 80px clamp(24px, 5vw, 64px); }
-
-.spotify-container { max-width: 480px; margin: 0 auto; }
+.about-spotify { margin-top: 32px; }
 
 .spotify-label {
   font-family: 'Space Mono', monospace;
