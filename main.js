@@ -75,6 +75,11 @@ function updateHScroll() {
   const clampedX = Math.max(-(totalSlides - 1) * 100, Math.min(0, translateX));
   hTrack.style.transform = `translateX(${clampedX}vw)`;
 
+  // Active slide class for scale animation
+  slides.forEach((slide, i) => {
+    slide.classList.toggle('active', i === slideIndex);
+  });
+
   // Update counter
   hCurrent.textContent = String(slideIndex + 1).padStart(2, '0');
 

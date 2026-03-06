@@ -439,21 +439,32 @@ a { text-decoration: none; color: inherit; }
 
 .hscroll-slide {
   min-width: 100vw;
-  padding: 32px clamp(24px, 5vw, 64px) 40px;
+  padding: 32px clamp(48px, 10vw, 160px) 40px;
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
 }
 
 .hslide-card {
   display: flex;
   position: relative;
   width: 100%;
+  max-width: 800px;
+  max-height: 480px;
   border-radius: var(--radius);
   overflow: hidden;
   text-decoration: none;
   color: var(--text);
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
-              box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: scale(0.85);
+  opacity: 0.4;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hscroll-slide.active .hslide-card {
+  transform: scale(1);
+  opacity: 1;
 }
 
 .hslide-card:hover {
