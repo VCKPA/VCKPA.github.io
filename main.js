@@ -46,81 +46,6 @@ menu.querySelectorAll('.mobile-link').forEach(link => {
   });
 });
 
-// ── Fluid Carousel ──────────────────────────────
-const cWrap = document.getElementById('carouselWrap');
-const cards = document.querySelectorAll('.ccard');
-const dots = document.querySelectorAll('.orbit-dot');
-const totalCards = cards.length;
-let currentCard = -1;
-
-function setActiveCard(index) {
-  if (index === currentCard) return;
-  currentCard = index;
-
-  cards.forEach((card, i) => {
-    card.classList.remove('active', 'prev', 'next');
-    if (i === index) {
-      card.classList.add('active');
-    } else if (i === index - 1 || (index === 0 && i === totalCards - 1)) {
-      card.classList.add('prev');
-    } else if (i === index + 1 || (index === totalCards - 1 && i === 0)) {
-      card.classList.add('next');
-    }
-  });
-
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === index);
-  });
-}
-
-// ── Sprinkle parallax ────────────────────────────
-const sprinkles = document.querySelectorAll('.sprinkle');
-
-function updateSprinkles() {
-  if (!cWrap) return;
-  const wrapTop = cWrap.offsetTop;
-  const wrapHeight = cWrap.offsetHeight;
-  const scrolled = window.scrollY - wrapTop;
-  const progress = Math.max(0, Math.min(1, scrolled / (wrapHeight - window.innerHeight)));
-
-  sprinkles.forEach(sp => {
-    const speed = parseFloat(sp.style.getPropertyValue('--speed'));
-    const rot = sp.style.getPropertyValue('--rot');
-    const yOffset = progress * speed * 1200;
-    const xDrift = Math.sin(progress * Math.PI * 2 + speed * 10) * speed * 120;
-    const extraRot = progress * speed * 360;
-    const scale = 1 + progress * Math.abs(speed) * 0.8;
-    sp.style.transform = `rotate(calc(${rot} + ${extraRot}deg)) translate(${xDrift}px, ${yOffset}px) scale(${scale})`;
-    sp.style.opacity = 0.35 + progress * 0.35;
-  });
-}
-
-function updateCarousel() {
-  if (!cWrap) return;
-
-  const wrapTop = cWrap.offsetTop;
-  const wrapHeight = cWrap.offsetHeight;
-  const viewH = window.innerHeight;
-  const scrollableDistance = wrapHeight - viewH;
-  const scrolled = window.scrollY - wrapTop;
-  const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-
-  // Discrete snapping: each card gets an equal slice with a dead zone in the middle
-  const sliceSize = 1 / totalCards;
-  let slideIndex = 0;
-  for (let i = 0; i < totalCards; i++) {
-    if (progress >= i * sliceSize) slideIndex = i;
-  }
-  slideIndex = Math.min(totalCards - 1, slideIndex);
-
-  setActiveCard(slideIndex);
-  updateSprinkles();
-}
-
-window.addEventListener('scroll', updateCarousel, { passive: true });
-setActiveCard(0);
-updateCarousel();
-
 // ── Parallax on scroll ──────────────────────────
 const parallaxEls = document.querySelectorAll('[data-parallax]');
 
@@ -140,7 +65,7 @@ updateParallax();
 // ── Scroll reveal ───────────────────────────────
 const revealEls = document.querySelectorAll(
   '.about-grid, .about-headline, .about-body, .about-details, ' +
-  '.section-header:not(.carousel-header), .spotify-container, .contact-inner'
+  '.section-header, .spotify-container, .contact-inner, .work-scroll'
 );
 
 revealEls.forEach(el => el.classList.add('reveal'));
