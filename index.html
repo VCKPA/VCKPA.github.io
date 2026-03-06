@@ -89,71 +89,80 @@
     </div>
   </div>
 
-  <!-- Selected Work -->
-  <section class="section" id="work">
-    <div class="section-header">
-      <span class="section-number">01</span>
-      <h2 class="section-title">Selected Work</h2>
-      <div class="section-line"></div>
-    </div>
+  <!-- Selected Work — Horizontal Scroll Lock -->
+  <div class="hscroll-wrap" id="hscrollWrap">
+    <div class="hscroll-sticky">
+      <div class="section-header hscroll-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">Selected Work</h2>
+        <div class="section-line"></div>
+        <span class="hscroll-counter"><span id="hscrollCurrent">01</span> / <span id="hscrollTotal">04</span></span>
+      </div>
+      <div class="hscroll-track" id="hscrollTrack">
 
-    <div class="projects">
-      <a href="https://zenithvintage.org/" target="_blank" rel="noopener" class="project-card-full hoverable">
-        <div class="project-card-full-bg" style="background: linear-gradient(135deg, #2A2520, #1A1714);"></div>
-        <div class="project-card-full-content">
-          <span class="project-tag"><i class="ti ti-world"></i> Web Design &mdash; Live Site</span>
-          <h3 class="project-name-full">Zenith Vintage</h3>
-          <p class="project-desc-full">A nostalgic digital experience celebrating the golden age of crooners. Brand identity, web design, and front-end development.</p>
-          <span class="project-visit">Visit Site <i class="ti ti-arrow-right"></i></span>
+        <!-- Slide 1: Zenith Vintage -->
+        <div class="hscroll-slide">
+          <a href="https://zenithvintage.org/" target="_blank" rel="noopener" class="hslide-card hslide-dark">
+            <div class="hslide-bg" style="background: linear-gradient(135deg, #2A2520, #1A1714);"></div>
+            <div class="hslide-content">
+              <span class="hslide-num">01</span>
+              <span class="project-tag"><i class="ti ti-world"></i> Web Design &mdash; Live Site</span>
+              <h3 class="hslide-title">Zenith Vintage</h3>
+              <p class="hslide-desc">A nostalgic digital experience celebrating the golden age of crooners. Brand identity, web design, and front-end development.</p>
+              <span class="hslide-link">Visit Site <i class="ti ti-arrow-right"></i></span>
+            </div>
+          </a>
         </div>
-        <div class="project-card-full-num">01</div>
-      </a>
 
-      <div class="projects-grid">
-        <a href="https://vckpa.github.io/scheduler/" target="_blank" rel="noopener" class="project-card hoverable" data-tilt>
-          <div class="project-img">
-            <div class="project-placeholder" style="background: linear-gradient(135deg, #D3DEE8, #B8C8D8);">
-              <i class="ti ti-device-mobile placeholder-icon-sm"></i>
+        <!-- Slide 2: Rutgers Course Scheduler -->
+        <div class="hscroll-slide">
+          <a href="https://vckpa.github.io/scheduler/" target="_blank" rel="noopener" class="hslide-card">
+            <div class="hslide-bg" style="background: linear-gradient(135deg, #D3DEE8, #B8C8D8);"></div>
+            <div class="hslide-content">
+              <span class="hslide-num">02</span>
+              <span class="project-tag"><i class="ti ti-device-mobile"></i> Mobile App &mdash; Case Study</span>
+              <h3 class="hslide-title">Rutgers Course Scheduler</h3>
+              <p class="hslide-desc">Rethinking how students plan their semesters with smart conflict detection and drag-and-drop scheduling.</p>
+              <span class="hslide-link">View Project <i class="ti ti-arrow-right"></i></span>
             </div>
-          </div>
-          <div class="project-info">
-            <span class="project-tag"><i class="ti ti-device-mobile"></i> Mobile App &mdash; Case Study</span>
-            <h3 class="project-name">Rutgers Course Scheduler</h3>
-            <p class="project-desc">Rethinking how students plan their semesters with smart conflict detection.</p>
-            <span class="project-arrow"><i class="ti ti-arrow-right"></i></span>
-          </div>
-        </a>
+          </a>
+        </div>
 
-        <a href="#" class="project-card hoverable" data-tilt>
-          <div class="project-img">
-            <div class="project-placeholder" style="background: linear-gradient(135deg, #D8E8D3, #BDD4B5);">
-              <i class="ti ti-stethoscope placeholder-icon-sm"></i>
+        <!-- Slide 3: Patient Needs -->
+        <div class="hscroll-slide">
+          <a href="#" class="hslide-card">
+            <div class="hslide-bg" style="background: linear-gradient(135deg, #D8E8D3, #BDD4B5);"></div>
+            <div class="hslide-content">
+              <span class="hslide-num">03</span>
+              <span class="project-tag"><i class="ti ti-stethoscope"></i> UX Research &mdash; Case Study</span>
+              <h3 class="hslide-title">Understanding Patient Needs</h3>
+              <p class="hslide-desc">Mixed-methods research informing a healthcare dashboard for 5,000+ clinicians.</p>
+              <span class="hslide-link">View Case Study <i class="ti ti-arrow-right"></i></span>
             </div>
-          </div>
-          <div class="project-info">
-            <span class="project-tag"><i class="ti ti-stethoscope"></i> UX Research &mdash; Case Study</span>
-            <h3 class="project-name">Understanding Patient Needs</h3>
-            <p class="project-desc">Mixed-methods research informing a healthcare dashboard for 5,000+ clinicians.</p>
-            <span class="project-arrow"><i class="ti ti-arrow-right"></i></span>
-          </div>
-        </a>
+          </a>
+        </div>
 
-        <a href="https://yanylin.me" target="_blank" rel="noopener" class="project-card hoverable" data-tilt>
-          <div class="project-img">
-            <div class="project-placeholder" style="background: linear-gradient(135deg, #E8D3D8, #D8B8C2);">
-              <i class="ti ti-world placeholder-icon-sm"></i>
+        <!-- Slide 4: Yanylin.me -->
+        <div class="hscroll-slide">
+          <a href="https://yanylin.me" target="_blank" rel="noopener" class="hslide-card">
+            <div class="hslide-bg" style="background: linear-gradient(135deg, #E8D3D8, #D8B8C2);"></div>
+            <div class="hslide-content">
+              <span class="hslide-num">04</span>
+              <span class="project-tag"><i class="ti ti-world"></i> Client Website &mdash; Web Design</span>
+              <h3 class="hslide-title">Yanylin.me</h3>
+              <p class="hslide-desc">Personal portfolio site designed and developed for a client from concept to launch.</p>
+              <span class="hslide-link">Visit Site <i class="ti ti-arrow-right"></i></span>
             </div>
-          </div>
-          <div class="project-info">
-            <span class="project-tag"><i class="ti ti-world"></i> Client Website &mdash; Web Design</span>
-            <h3 class="project-name">Yanylin.me</h3>
-            <p class="project-desc">Personal portfolio site designed and developed for a client from concept to launch.</p>
-            <span class="project-arrow"><i class="ti ti-arrow-right"></i></span>
-          </div>
-        </a>
+          </a>
+        </div>
+
+      </div>
+      <!-- Progress bar -->
+      <div class="hscroll-progress">
+        <div class="hscroll-progress-fill" id="hscrollProgress"></div>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- About -->
   <section class="section section-about" id="about">

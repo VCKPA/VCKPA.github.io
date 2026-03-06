@@ -11,7 +11,6 @@ document.querySelectorAll('.split-text').forEach((el, lineIdx) => {
   });
 });
 
-
 // ── Magnetic Elements ───────────────────────────
 document.querySelectorAll('.magnetic').forEach(el => {
   el.addEventListener('mousemove', e => {
@@ -22,20 +21,6 @@ document.querySelectorAll('.magnetic').forEach(el => {
   });
   el.addEventListener('mouseleave', () => {
     el.style.transform = 'translate(0, 0)';
-  });
-});
-
-// ── Card Tilt Effect ────────────────────────────
-document.querySelectorAll('[data-tilt]').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    card.style.transform =
-      `translateY(-8px) perspective(800px) rotateX(${y * -6}deg) rotateY(${x * 6}deg)`;
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'translateY(0) perspective(800px) rotateX(0) rotateY(0)';
   });
 });
 
@@ -61,6 +46,45 @@ menu.querySelectorAll('.mobile-link').forEach(link => {
   });
 });
 
+// ── Horizontal Scroll-Lock ──────────────────────
+const hWrap = document.getElementById('hscrollWrap');
+const hTrack = document.getElementById('hscrollTrack');
+const hCurrent = document.getElementById('hscrollCurrent');
+const hProgress = document.getElementById('hscrollProgress');
+const slides = document.querySelectorAll('.hscroll-slide');
+const totalSlides = slides.length;
+
+function updateHScroll() {
+  if (!hWrap) return;
+
+  const wrapTop = hWrap.offsetTop;
+  const wrapHeight = hWrap.offsetHeight;
+  const viewH = window.innerHeight;
+  const scrollableDistance = wrapHeight - viewH;
+  const scrolled = window.scrollY - wrapTop;
+  const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+
+  // Which slide are we on
+  const slideIndex = Math.min(
+    totalSlides - 1,
+    Math.floor(progress * totalSlides)
+  );
+
+  // Smooth translate
+  const translateX = progress * (totalSlides - 1) * -100;
+  const clampedX = Math.max(-(totalSlides - 1) * 100, Math.min(0, translateX));
+  hTrack.style.transform = `translateX(${clampedX}vw)`;
+
+  // Update counter
+  hCurrent.textContent = String(slideIndex + 1).padStart(2, '0');
+
+  // Update progress bar
+  hProgress.style.width = `${((slideIndex + 1) / totalSlides) * 100}%`;
+}
+
+window.addEventListener('scroll', updateHScroll, { passive: true });
+updateHScroll();
+
 // ── Parallax on scroll ──────────────────────────
 const parallaxEls = document.querySelectorAll('[data-parallax]');
 
@@ -79,9 +103,8 @@ updateParallax();
 
 // ── Scroll reveal ───────────────────────────────
 const revealEls = document.querySelectorAll(
-  '.project-card, .project-card-full, .about-grid, .about-headline, ' +
-  '.about-body, .about-details, .section-header, .photo-grid, ' +
-  '.spotify-container, .contact-inner'
+  '.about-grid, .about-headline, .about-body, .about-details, ' +
+  '.section-header, .spotify-container, .contact-inner'
 );
 
 revealEls.forEach(el => el.classList.add('reveal'));
@@ -96,8 +119,3 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 revealEls.forEach(el => observer.observe(el));
-
-// Stagger project cards
-document.querySelectorAll('.project-card').forEach((card, i) => {
-  card.style.transitionDelay = `${i * 0.12}s`;
-});
