@@ -429,101 +429,84 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0 clamp(24px, 5vw, 64px) 40px;
-  overflow: visible;
+  overflow: hidden;
 }
 
-/* ── Orbit Dots (small circles) ──────────────── */
+/* ── Orbit Dots ──────────────────────────────── */
 .carousel-orbit {
   position: absolute;
   display: flex;
-  gap: 16px;
+  gap: 14px;
   z-index: 10;
-  bottom: 48px;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .orbit-dot {
-  width: 48px;
-  height: 48px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--dot-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-  opacity: 0.4;
-  transform: scale(0.8);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  opacity: 0.3;
+  transform: scale(1);
 }
 
 .orbit-dot.active {
   opacity: 1;
-  transform: scale(1.15);
-  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+  transform: scale(1.4);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
 
-.orbit-dot-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 1px;
-  pointer-events: none;
-}
+.orbit-dot-label { display: none; }
 
 /* ── Cards ───────────────────────────────────── */
 .carousel-cards {
-  position: static;
-  width: 560px;
-  max-width: 90vw;
-  height: 340px;
+  position: relative;
+  width: 520px;
+  max-width: 85vw;
+  height: 320px;
 }
 
 .ccard {
-  position: fixed;
-  width: 560px;
-  max-width: 90vw;
-  height: 340px;
-  border-radius: 50%;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
   overflow: hidden;
   text-decoration: none;
   color: var(--text);
   display: flex;
   opacity: 0;
-  transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  transform: translateX(120%) scale(0.3);
+  border-radius: 160px;
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              border-radius 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   pointer-events: none;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.08);
-  z-index: 5;
 }
 
 .ccard.active {
   border-radius: var(--radius);
-  transform: translate(-50%, -50%) scale(1);
+  transform: translateX(0) scale(1);
   opacity: 1;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
   pointer-events: all;
-  z-index: 6;
 }
 
 .ccard.prev {
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  transform: translate(-50%, -50%) translateX(calc(-50vw + 40px));
-  opacity: 0.6;
+  transform: translateX(-120%) scale(0.3);
+  border-radius: 160px;
+  opacity: 0.5;
 }
 
 .ccard.next {
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  transform: translate(-50%, -50%) translateX(calc(50vw - 40px));
-  opacity: 0.6;
+  transform: translateX(120%) scale(0.3);
+  border-radius: 160px;
+  opacity: 0.5;
 }
 
 .ccard:hover {
