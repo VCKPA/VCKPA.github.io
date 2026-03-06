@@ -405,7 +405,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Fluid Carousel ──────────────────────────── */
 .carousel-wrap {
-  height: 300vh;
+  height: 200vh;
   position: relative;
 }
 
@@ -488,29 +488,31 @@ a { text-decoration: none; color: inherit; }
   text-decoration: none;
   color: var(--text);
   display: flex;
-  transform: scale(0.12);
+  transform: scale(0.08) translateX(600px);
   opacity: 0;
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1);
   box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+  pointer-events: none;
 }
 
 .ccard.active {
   border-radius: var(--radius);
-  transform: scale(1);
+  transform: scale(1) translateX(0);
   opacity: 1;
   box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+  pointer-events: all;
 }
 
 .ccard.prev {
   border-radius: 50%;
-  transform: scale(0.15) translateX(-400px);
-  opacity: 0.3;
+  transform: scale(0.1) translateX(-900px);
+  opacity: 0.5;
 }
 
 .ccard.next {
   border-radius: 50%;
-  transform: scale(0.15) translateX(400px);
-  opacity: 0.3;
+  transform: scale(0.1) translateX(900px);
+  opacity: 0.5;
 }
 
 .ccard:hover {
