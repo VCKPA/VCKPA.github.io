@@ -1,3 +1,42 @@
+// ── Custom Cursor ───────────────────────────────
+const cursor = document.getElementById('cursor');
+const cursorDot = document.getElementById('cursorDot');
+let cursorX = 0, cursorY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', e => {
+  cursorX = e.clientX;
+  cursorY = e.clientY;
+  cursorDot.style.left = cursorX + 'px';
+  cursorDot.style.top = cursorY + 'px';
+  cursor.classList.add('visible');
+  cursorDot.classList.add('visible');
+});
+
+document.addEventListener('mouseleave', () => {
+  cursor.classList.remove('visible');
+  cursorDot.classList.remove('visible');
+});
+
+function animateCursor() {
+  ringX += (cursorX - ringX) * 0.15;
+  ringY += (cursorY - ringY) * 0.15;
+  cursor.style.left = ringX + 'px';
+  cursor.style.top = ringY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.querySelectorAll('a, button, .hoverable').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.classList.add('hovering');
+    cursorDot.classList.add('hovering');
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.classList.remove('hovering');
+    cursorDot.classList.remove('hovering');
+  });
+});
+
 // ── Split Text Animation ────────────────────────
 document.querySelectorAll('.split-text').forEach((el, lineIdx) => {
   const text = el.textContent;
