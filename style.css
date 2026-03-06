@@ -405,7 +405,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Horizontal Scroll-Lock Section ──────────── */
 .hscroll-wrap {
-  height: 400vh; /* 100vh per slide */
+  height: 300vh; /* 100vh per slide */
   position: relative;
 }
 
