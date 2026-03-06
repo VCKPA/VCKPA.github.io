@@ -7,17 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- Page Loader -->
-  <div class="loader" id="loader">
-    <div class="loader-inner">
-      <span class="loader-name">Victoria Komperda</span>
-      <div class="loader-bar"><div class="loader-fill"></div></div>
-    </div>
-  </div>
 
   <!-- Grain Overlay -->
   <div class="grain"></div>
@@ -59,33 +53,38 @@
       </h1>
       <p class="hero-bio">UI/UX Designer. Business Student. Photographer.</p>
       <div class="hero-scroll">
-        <div class="hero-scroll-line"></div>
+        <div class="hero-scroll-anim">
+          <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@latest/dist/dotlottie-wc.js" type="module"></script>
+          <dotlottie-wc src="https://lottie.host/2a6e18b0-ba85-4340-8b86-6e1ccabe2a72/HMVzfMBijN.lottie" autoplay loop style="width:32px;height:32px;opacity:0.5;"></dotlottie-wc>
+        </div>
         <span>Scroll</span>
       </div>
     </div>
     <div class="hero-photo" data-parallax="0.06">
       <div class="hero-photo-frame hoverable">
-        <div class="hero-photo-placeholder"></div>
+        <div class="hero-photo-placeholder">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&crop=face" alt="Victoria Komperda" class="hero-photo-img" loading="eager">
+        </div>
       </div>
-      <div class="hero-photo-caption">Based in New Jersey</div>
+      <div class="hero-photo-caption"><i class="ti ti-map-pin"></i> Based in New Jersey</div>
     </div>
   </header>
 
   <!-- Marquee -->
   <div class="marquee">
     <div class="marquee-track">
-      <span>UI Design</span><span class="marquee-dot"></span>
-      <span>UX Research</span><span class="marquee-dot"></span>
-      <span>Prototyping</span><span class="marquee-dot"></span>
-      <span>Photography</span><span class="marquee-dot"></span>
-      <span>Visual Design</span><span class="marquee-dot"></span>
-      <span>Design Systems</span><span class="marquee-dot"></span>
-      <span>UI Design</span><span class="marquee-dot"></span>
-      <span>UX Research</span><span class="marquee-dot"></span>
-      <span>Prototyping</span><span class="marquee-dot"></span>
-      <span>Photography</span><span class="marquee-dot"></span>
-      <span>Visual Design</span><span class="marquee-dot"></span>
-      <span>Design Systems</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-layout"></i> UI Design</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-users"></i> UX Research</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-device-mobile"></i> Prototyping</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-camera"></i> Photography</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-palette"></i> Visual Design</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-components"></i> Design Systems</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-layout"></i> UI Design</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-users"></i> UX Research</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-device-mobile"></i> Prototyping</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-camera"></i> Photography</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-palette"></i> Visual Design</span><span class="marquee-dot"></span>
+      <span><i class="ti ti-components"></i> Design Systems</span><span class="marquee-dot"></span>
     </div>
   </div>
 
@@ -99,12 +98,14 @@
 
     <div class="projects">
       <a href="https://zenithvintage.org/" target="_blank" rel="noopener" class="project-card-full hoverable">
-        <div class="project-card-full-bg" style="background: linear-gradient(135deg, #2A2520, #1A1714);"></div>
+        <div class="project-card-full-bg">
+          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1400&h=600&fit=crop&crop=center" alt="Zenith Vintage" class="project-card-full-img">
+        </div>
         <div class="project-card-full-content">
-          <span class="project-tag">Web Design &mdash; Live Site</span>
+          <span class="project-tag"><i class="ti ti-world"></i> Web Design &mdash; Live Site</span>
           <h3 class="project-name-full">Zenith Vintage</h3>
           <p class="project-desc-full">A nostalgic digital experience celebrating the golden age of crooners. Brand identity, web design, and front-end development.</p>
-          <span class="project-visit">Visit Site &rarr;</span>
+          <span class="project-visit">Visit Site <i class="ti ti-arrow-right"></i></span>
         </div>
         <div class="project-card-full-num">01</div>
       </a>
@@ -112,43 +113,37 @@
       <div class="projects-grid">
         <a href="#" class="project-card hoverable" data-tilt>
           <div class="project-img">
-            <div class="project-placeholder" style="background: linear-gradient(135deg, #D3DEE8, #B8C8D8);">
-              <span class="project-num">02</span>
-            </div>
+            <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&h=375&fit=crop" alt="Course Scheduler" class="project-cover" loading="lazy">
           </div>
           <div class="project-info">
-            <span class="project-tag">Mobile App &mdash; Case Study</span>
+            <span class="project-tag"><i class="ti ti-device-mobile"></i> Mobile App &mdash; Case Study</span>
             <h3 class="project-name">Rutgers Course Scheduler</h3>
             <p class="project-desc">Rethinking how students plan their semesters with smart conflict detection.</p>
-            <span class="project-arrow">&rarr;</span>
+            <span class="project-arrow"><i class="ti ti-arrow-right"></i></span>
           </div>
         </a>
 
         <a href="#" class="project-card hoverable" data-tilt>
           <div class="project-img">
-            <div class="project-placeholder" style="background: linear-gradient(135deg, #D8E8D3, #BDD4B5);">
-              <span class="project-num">03</span>
-            </div>
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=375&fit=crop" alt="Healthcare Dashboard" class="project-cover" loading="lazy">
           </div>
           <div class="project-info">
-            <span class="project-tag">UX Research &mdash; Case Study</span>
+            <span class="project-tag"><i class="ti ti-stethoscope"></i> UX Research &mdash; Case Study</span>
             <h3 class="project-name">Understanding Patient Needs</h3>
             <p class="project-desc">Mixed-methods research informing a healthcare dashboard for 5,000+ clinicians.</p>
-            <span class="project-arrow">&rarr;</span>
+            <span class="project-arrow"><i class="ti ti-arrow-right"></i></span>
           </div>
         </a>
 
         <a href="#" class="project-card hoverable" data-tilt>
           <div class="project-img">
-            <div class="project-placeholder" style="background: linear-gradient(135deg, #E8D3D8, #D8B8C2);">
-              <span class="project-num">04</span>
-            </div>
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=375&fit=crop" alt="Enterprise Workflows" class="project-cover" loading="lazy">
           </div>
           <div class="project-info">
-            <span class="project-tag">Product Design &mdash; Case Study</span>
+            <span class="project-tag"><i class="ti ti-chart-dots"></i> Product Design &mdash; Case Study</span>
             <h3 class="project-name">Simplifying Workflows</h3>
             <p class="project-desc">Enterprise tool redesign cutting task completion time by 40%.</p>
-            <span class="project-arrow">&rarr;</span>
+            <span class="project-arrow"><i class="ti ti-arrow-right"></i></span>
           </div>
         </a>
       </div>
@@ -165,7 +160,7 @@
 
     <div class="about-grid">
       <div class="about-photo" data-parallax="0.04">
-        <div class="about-photo-placeholder"></div>
+        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&h=667&fit=crop&crop=face" alt="Victoria" class="about-photo-img" loading="lazy">
       </div>
       <div class="about-text">
         <h3 class="about-headline">Designer, photographer,<br><em>perpetual learner.</em></h3>
@@ -181,15 +176,15 @@
         </p>
         <div class="about-details">
           <div class="about-detail">
-            <span class="detail-label">Education</span>
+            <span class="detail-label"><i class="ti ti-school"></i> Education</span>
             <span class="detail-value">Rutgers University</span>
           </div>
           <div class="about-detail">
-            <span class="detail-label">Focus</span>
+            <span class="detail-label"><i class="ti ti-focus-2"></i> Focus</span>
             <span class="detail-value">Business &amp; Design</span>
           </div>
           <div class="about-detail">
-            <span class="detail-label">Location</span>
+            <span class="detail-label"><i class="ti ti-map-pin"></i> Location</span>
             <span class="detail-value">New Jersey</span>
           </div>
         </div>
@@ -200,7 +195,7 @@
   <!-- Now Playing / Spotify -->
   <section class="section section-spotify">
     <div class="spotify-container">
-      <div class="spotify-label">What I'm listening to</div>
+      <div class="spotify-label"><i class="ti ti-headphones"></i> What I'm listening to</div>
       <iframe
         style="border-radius:12px"
         src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
@@ -219,12 +214,14 @@
     <div class="contact-inner">
       <span class="contact-label">03 &mdash; Get in Touch</span>
       <h2 class="contact-title">Let's create<br><em>something great.</em></h2>
-      <a href="mailto:victoria.komperda1@gmail.com" class="contact-email hoverable magnetic">victoria.komperda1@gmail.com</a>
+      <a href="mailto:victoria.komperda1@gmail.com" class="contact-email hoverable magnetic">
+        <i class="ti ti-mail"></i> victoria.komperda1@gmail.com
+      </a>
       <div class="contact-links">
-        <a href="#" class="contact-social hoverable magnetic">LinkedIn</a>
-        <a href="#" class="contact-social hoverable magnetic">Behance</a>
-        <a href="#" class="contact-social hoverable magnetic">Instagram</a>
-        <a href="#" class="contact-social hoverable magnetic">Resume</a>
+        <a href="#" class="contact-social hoverable magnetic"><i class="ti ti-brand-linkedin"></i> LinkedIn</a>
+        <a href="#" class="contact-social hoverable magnetic"><i class="ti ti-brand-dribbble"></i> Behance</a>
+        <a href="#" class="contact-social hoverable magnetic"><i class="ti ti-brand-instagram"></i> Instagram</a>
+        <a href="#" class="contact-social hoverable magnetic"><i class="ti ti-file-cv"></i> Resume</a>
       </div>
     </div>
   </section>

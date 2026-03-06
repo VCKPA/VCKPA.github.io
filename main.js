@@ -1,9 +1,3 @@
-// ── Page Loader ─────────────────────────────────
-const loader = document.getElementById('loader');
-window.addEventListener('load', () => {
-  setTimeout(() => loader.classList.add('done'), 1800);
-});
-
 // ── Split Text Animation ────────────────────────
 document.querySelectorAll('.split-text').forEach((el, lineIdx) => {
   const text = el.textContent;

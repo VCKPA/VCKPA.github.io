@@ -671,14 +671,51 @@ function initSemesterSelect() {
   currentTerm = first.term;
 }
 
+// ---- IndexedDB Cache ----
+const DB_NAME = 'ru_scheduler_cache';
+const DB_VERSION = 1;
+
+function openCacheDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('courses')) {
+        db.createObjectStore('courses');
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getCachedCourses(key) {
+  try {
+    const db = await openCacheDB();
+    return new Promise((resolve) => {
+      const tx = db.transaction('courses', 'readonly');
+      const req = tx.objectStore('courses').get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch { return null; }
+}
+
+async function setCachedCourses(key, data) {
+  try {
+    const db = await openCacheDB();
+    const tx = db.transaction('courses', 'readwrite');
+    tx.objectStore('courses').put({ courses: data, ts: Date.now() }, key);
+  } catch { /* cache write failed, non-critical */ }
+}
+
 // ---- API ----
 // Rutgers SOC API — need CORS proxy from browser.
-// Try multiple proxies for reliability.
 const PROXIES = [
   (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
   (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  (u) => u, // direct (works if Rutgers adds CORS headers)
+  (u) => u,
 ];
 
 async function fetchWithProxies(targetUrl) {
@@ -693,31 +730,74 @@ async function fetchWithProxies(targetUrl) {
   throw new Error('All proxies failed');
 }
 
+function applyCoursesData(data) {
+  allCourses = data;
+  const subSet = new Map();
+  allCourses.forEach(c => {
+    const key = c.subject || c.offeringUnitCode;
+    if (key && !subSet.has(key)) {
+      subSet.set(key, c.subjectDescription || c.offeringUnitTitle || key);
+    }
+  });
+  subjects = [...subSet.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  populateSubjectFilter();
+  renderMyCourses();
+  renderCalendar();
+}
+
+const CACHE_MAX_AGE = 10 * 60 * 1000; // 10 minutes
+
 async function loadCourseData() {
   const overlay = document.getElementById('loadingOverlay');
   const syncInd = document.getElementById('syncIndicator');
-  overlay.classList.remove('hidden');
-  syncInd.className = 'sync-indicator loading';
-  syncInd.querySelector('.sync-text').textContent = 'Syncing...';
-
+  const cacheKey = `${currentYear}_${currentTerm}`;
   const targetUrl = `https://sis.rutgers.edu/soc/api/courses.json?year=${currentYear}&term=${currentTerm}&campus=NB`;
 
+  // 1. Try cache first — instant load
+  const cached = await getCachedCourses(cacheKey);
+  if (cached && cached.courses) {
+    applyCoursesData(cached.courses);
+    overlay.classList.add('hidden');
+    loadSavedSchedule();
+
+    const age = Date.now() - (cached.ts || 0);
+    if (age < CACHE_MAX_AGE) {
+      // Cache is fresh, just show live status
+      syncInd.className = 'sync-indicator live';
+      syncInd.querySelector('.sync-text').textContent = `Live — ${cached.courses.length} courses`;
+      return;
+    }
+
+    // Cache is stale — background refresh (no overlay)
+    syncInd.className = 'sync-indicator loading';
+    syncInd.querySelector('.sync-text').textContent = 'Updating...';
+    try {
+      const fresh = await fetchWithProxies(targetUrl);
+      await setCachedCourses(cacheKey, fresh);
+      applyCoursesData(fresh);
+      loadSavedSchedule();
+      renderSearchResults();
+      syncInd.className = 'sync-indicator live';
+      syncInd.querySelector('.sync-text').textContent = `Live — ${fresh.length} courses`;
+    } catch {
+      // Stale cache is fine, just note it
+      syncInd.className = 'sync-indicator live';
+      syncInd.querySelector('.sync-text').textContent = `Cached — ${cached.courses.length} courses`;
+    }
+    return;
+  }
+
+  // 2. No cache — blocking first load with overlay
+  overlay.classList.remove('hidden');
+  syncInd.className = 'sync-indicator loading';
+  syncInd.querySelector('.sync-text').textContent = 'Downloading courses...';
+
   try {
-    allCourses = await fetchWithProxies(targetUrl);
-
-    // Build subject list
-    const subSet = new Map();
-    allCourses.forEach(c => {
-      const key = c.subject || c.offeringUnitCode;
-      if (key && !subSet.has(key)) {
-        subSet.set(key, c.subjectDescription || c.offeringUnitTitle || key);
-      }
-    });
-    subjects = [...subSet.entries()].sort((a,b) => a[1].localeCompare(b[1]));
-    populateSubjectFilter();
-
+    const data = await fetchWithProxies(targetUrl);
+    await setCachedCourses(cacheKey, data);
+    applyCoursesData(data);
     syncInd.className = 'sync-indicator live';
-    syncInd.querySelector('.sync-text').textContent = `Live — ${allCourses.length} courses`;
+    syncInd.querySelector('.sync-text').textContent = `Live — ${data.length} courses`;
     syncInd.style.cursor = 'default';
     syncInd.onclick = null;
   } catch (err) {
