@@ -430,6 +430,7 @@ a { text-decoration: none; color: inherit; }
   justify-content: center;
   position: relative;
   padding: 0 clamp(24px, 5vw, 64px) 40px;
+  overflow: visible;
 }
 
 /* ── Orbit Dots (small circles) ──────────────── */
@@ -474,45 +475,55 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Cards ───────────────────────────────────── */
 .carousel-cards {
-  position: relative;
-  width: 100%;
-  max-width: 560px;
+  position: static;
+  width: 560px;
+  max-width: 90vw;
   height: 340px;
 }
 
 .ccard {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  width: 560px;
+  max-width: 90vw;
+  height: 340px;
   border-radius: 50%;
   overflow: hidden;
   text-decoration: none;
   color: var(--text);
   display: flex;
-  transform: scale(0.08) translateX(600px);
   opacity: 0;
   transition: all 0.9s cubic-bezier(0.23, 1, 0.32, 1);
   box-shadow: 0 8px 32px rgba(0,0,0,0.06);
   pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.08);
+  z-index: 5;
 }
 
 .ccard.active {
   border-radius: var(--radius);
-  transform: scale(1) translateX(0);
+  transform: translate(-50%, -50%) scale(1);
   opacity: 1;
   box-shadow: 0 24px 64px rgba(0,0,0,0.12);
   pointer-events: all;
+  z-index: 6;
 }
 
 .ccard.prev {
   border-radius: 50%;
-  transform: scale(0.1) translateX(-900px);
-  opacity: 0.5;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%) translateX(calc(-50vw + 40px));
+  opacity: 0.6;
 }
 
 .ccard.next {
   border-radius: 50%;
-  transform: scale(0.1) translateX(900px);
-  opacity: 0.5;
+  width: 60px;
+  height: 60px;
+  transform: translate(-50%, -50%) translateX(calc(50vw - 40px));
+  opacity: 0.6;
 }
 
 .ccard:hover {

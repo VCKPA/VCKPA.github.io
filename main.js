@@ -83,6 +83,14 @@ function updateCarousel() {
   const scrolled = window.scrollY - wrapTop;
   const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
 
+  // Hide fixed cards when not in carousel section
+  const inView = scrolled > -viewH && scrolled < scrollableDistance + viewH;
+  cards.forEach(card => {
+    card.style.visibility = inView ? 'visible' : 'hidden';
+  });
+
+  if (!inView) return;
+
   const slideIndex = Math.min(
     totalCards - 1,
     Math.floor(progress * totalCards)
@@ -93,6 +101,7 @@ function updateCarousel() {
 
 window.addEventListener('scroll', updateCarousel, { passive: true });
 setActiveCard(0);
+updateCarousel();
 
 // ── Parallax on scroll ──────────────────────────
 const parallaxEls = document.querySelectorAll('[data-parallax]');
