@@ -3,105 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VCKPA — UX Portfolio</title>
+  <title>Victoria Komperda — UI/UX Designer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
   <!-- Navigation -->
   <nav class="nav" id="nav">
-    <a href="#" class="nav-logo">VCKPA</a>
+    <a href="#" class="nav-logo">VK</a>
     <div class="nav-links">
-      <a href="#work" class="nav-link">Work</a>
-      <a href="#about" class="nav-link">About</a>
-      <a href="#contact" class="nav-link">Contact</a>
+      <a href="#work" class="nav-link" data-text="Work">Work</a>
+      <a href="#about" class="nav-link" data-text="About">About</a>
+      <a href="#photography" class="nav-link" data-text="Photo">Photo</a>
+      <a href="#contact" class="nav-link" data-text="Contact">Contact</a>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">
       <span></span><span></span>
     </button>
   </nav>
 
-  <!-- Mobile Menu Overlay -->
+  <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <a href="#work" class="mobile-link">Work</a>
     <a href="#about" class="mobile-link">About</a>
+    <a href="#photography" class="mobile-link">Photo</a>
     <a href="#contact" class="mobile-link">Contact</a>
   </div>
 
   <!-- Hero -->
   <header class="hero" id="hero">
+    <div class="hero-bg-text" data-parallax="0.08">DESIGN</div>
     <div class="hero-content">
-      <p class="hero-tag">UX Designer</p>
-      <h1 class="hero-title">Crafting experiences<br><em>that matter</em></h1>
-      <p class="hero-sub">Thoughtful design grounded in research, shaped by empathy, and driven by impact.</p>
-      <a href="#work" class="hero-cta">View Work</a>
+      <div class="hero-intro">
+        <span class="hero-label">UI/UX Designer</span>
+        <span class="hero-label-dot"></span>
+        <span class="hero-label">Rutgers University</span>
+      </div>
+      <h1 class="hero-name">
+        <span class="hero-name-line" data-parallax="-0.03">Victoria</span>
+        <span class="hero-name-line hero-name-italic" data-parallax="-0.05">Komperda</span>
+      </h1>
+      <p class="hero-bio">
+        Designing intuitive digital experiences at the intersection of
+        business strategy, visual storytelling, and human-centered research.
+      </p>
+      <div class="hero-scroll">
+        <div class="hero-scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+    <div class="hero-photo" data-parallax="0.06">
+      <div class="hero-photo-frame">
+        <div class="hero-photo-placeholder"></div>
+      </div>
+      <div class="hero-photo-caption">Based in New Jersey</div>
     </div>
   </header>
 
-  <!-- Work -->
+  <!-- Marquee -->
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>UI Design</span><span class="marquee-dot"></span>
+      <span>UX Research</span><span class="marquee-dot"></span>
+      <span>Prototyping</span><span class="marquee-dot"></span>
+      <span>Photography</span><span class="marquee-dot"></span>
+      <span>Visual Design</span><span class="marquee-dot"></span>
+      <span>Design Systems</span><span class="marquee-dot"></span>
+      <span>UI Design</span><span class="marquee-dot"></span>
+      <span>UX Research</span><span class="marquee-dot"></span>
+      <span>Prototyping</span><span class="marquee-dot"></span>
+      <span>Photography</span><span class="marquee-dot"></span>
+      <span>Visual Design</span><span class="marquee-dot"></span>
+      <span>Design Systems</span><span class="marquee-dot"></span>
+    </div>
+  </div>
+
+  <!-- Selected Work -->
   <section class="section" id="work">
     <div class="section-header">
+      <span class="section-number">01</span>
       <h2 class="section-title">Selected Work</h2>
       <div class="section-line"></div>
     </div>
 
     <div class="projects">
-      <a href="#" class="project-card" data-color="#E8DDD3">
+      <a href="#" class="project-card hoverable" data-parallax="0.02">
         <div class="project-img">
-          <div class="project-placeholder" style="background:#E8DDD3;">
-            <span>01</span>
+          <div class="project-placeholder" style="background: linear-gradient(135deg, #E8DDD3, #D4C8BB);">
+            <span class="project-num">01</span>
           </div>
         </div>
         <div class="project-info">
-          <span class="project-tag">Mobile App — 2025</span>
-          <h3 class="project-name">Reimagining the Onboarding Experience</h3>
-          <p class="project-desc">End-to-end redesign of a fintech onboarding flow, reducing drop-off by 34%.</p>
-          <span class="project-link">View Case Study &rarr;</span>
+          <span class="project-tag">Mobile App &mdash; Case Study</span>
+          <h3 class="project-name">Reimagining Onboarding</h3>
+          <p class="project-desc">End-to-end redesign of a fintech onboarding flow reducing drop-off by 34%.</p>
+          <span class="project-arrow">&rarr;</span>
         </div>
       </a>
 
-      <a href="#" class="project-card" data-color="#D3DEE8">
+      <a href="#" class="project-card hoverable" data-parallax="0.04">
         <div class="project-img">
-          <div class="project-placeholder" style="background:#D3DEE8;">
-            <span>02</span>
+          <div class="project-placeholder" style="background: linear-gradient(135deg, #D3DEE8, #B8C8D8);">
+            <span class="project-num">02</span>
           </div>
         </div>
         <div class="project-info">
-          <span class="project-tag">Web Platform — 2024</span>
-          <h3 class="project-name">A Design System for Scale</h3>
-          <p class="project-desc">Building a unified component library serving 12 product teams and 200+ screens.</p>
-          <span class="project-link">View Case Study &rarr;</span>
+          <span class="project-tag">Web Platform &mdash; Case Study</span>
+          <h3 class="project-name">Design System at Scale</h3>
+          <p class="project-desc">Unified component library serving 12 product teams across 200+ screens.</p>
+          <span class="project-arrow">&rarr;</span>
         </div>
       </a>
 
-      <a href="#" class="project-card" data-color="#D8E8D3">
+      <a href="#" class="project-card hoverable" data-parallax="0.02">
         <div class="project-img">
-          <div class="project-placeholder" style="background:#D8E8D3;">
-            <span>03</span>
+          <div class="project-placeholder" style="background: linear-gradient(135deg, #D8E8D3, #BDD4B5);">
+            <span class="project-num">03</span>
           </div>
         </div>
         <div class="project-info">
-          <span class="project-tag">UX Research — 2024</span>
+          <span class="project-tag">UX Research &mdash; Case Study</span>
           <h3 class="project-name">Understanding Patient Needs</h3>
-          <p class="project-desc">Mixed-methods research informing a healthcare dashboard used by 5,000+ clinicians.</p>
-          <span class="project-link">View Case Study &rarr;</span>
+          <p class="project-desc">Mixed-methods research informing a healthcare dashboard for 5,000+ clinicians.</p>
+          <span class="project-arrow">&rarr;</span>
         </div>
       </a>
 
-      <a href="#" class="project-card" data-color="#E8D3D8">
+      <a href="#" class="project-card hoverable" data-parallax="0.04">
         <div class="project-img">
-          <div class="project-placeholder" style="background:#E8D3D8;">
-            <span>04</span>
+          <div class="project-placeholder" style="background: linear-gradient(135deg, #E8D3D8, #D8B8C2);">
+            <span class="project-num">04</span>
           </div>
         </div>
         <div class="project-info">
-          <span class="project-tag">Product Design — 2023</span>
-          <h3 class="project-name">Simplifying Complex Workflows</h3>
-          <p class="project-desc">Redesigning an enterprise tool to cut task completion time by 40%.</p>
-          <span class="project-link">View Case Study &rarr;</span>
+          <span class="project-tag">Product Design &mdash; Case Study</span>
+          <h3 class="project-name">Simplifying Workflows</h3>
+          <p class="project-desc">Enterprise tool redesign cutting task completion time by 40%.</p>
+          <span class="project-arrow">&rarr;</span>
         </div>
       </a>
     </div>
@@ -109,47 +154,97 @@
 
   <!-- About -->
   <section class="section section-about" id="about">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2 class="section-title">About</h2>
+      <div class="section-line"></div>
+    </div>
+
     <div class="about-grid">
-      <div class="about-photo">
+      <div class="about-photo" data-parallax="0.04">
         <div class="about-photo-placeholder"></div>
       </div>
       <div class="about-text">
-        <h2 class="section-title">About</h2>
+        <h3 class="about-headline">Designer, photographer,<br><em>perpetual learner.</em></h3>
         <p class="about-body">
-          I'm a UX designer who believes great design is invisible — it just works.
-          With a background in research and visual design, I bring clarity to complex problems
-          and craft solutions that feel intuitive.
+          I'm Victoria &mdash; a business student at Rutgers University with a passion for
+          crafting digital experiences that are both beautiful and functional. My work lives
+          at the crossroads of business thinking and creative problem-solving.
         </p>
         <p class="about-body">
-          Currently open to new opportunities. Let's make something meaningful together.
+          When I'm not designing interfaces, you'll find me behind a camera,
+          capturing moments that tell stories. Photography sharpens my eye for
+          composition, light, and detail &mdash; skills that feed directly into my design practice.
         </p>
-        <div class="about-skills">
-          <span class="skill">UX Research</span>
-          <span class="skill">Interaction Design</span>
-          <span class="skill">Prototyping</span>
-          <span class="skill">Design Systems</span>
-          <span class="skill">User Testing</span>
-          <span class="skill">Figma</span>
+        <div class="about-details">
+          <div class="about-detail">
+            <span class="detail-label">Education</span>
+            <span class="detail-value">Rutgers University</span>
+          </div>
+          <div class="about-detail">
+            <span class="detail-label">Focus</span>
+            <span class="detail-value">Business &amp; Design</span>
+          </div>
+          <div class="about-detail">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">New Jersey</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Photography Teaser -->
+  <section class="section section-photo" id="photography">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2 class="section-title">Photography</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-cell hoverable" data-parallax="0.02" style="background: linear-gradient(135deg, #C4BFB8, #ADA8A0);"></div>
+      <div class="photo-cell hoverable" data-parallax="0.05" style="background: linear-gradient(135deg, #B8C4C4, #9AABAB);"></div>
+      <div class="photo-cell hoverable" data-parallax="0.03" style="background: linear-gradient(135deg, #C4B8B8, #AB9A9A);"></div>
+      <div class="photo-cell hoverable" data-parallax="0.04" style="background: linear-gradient(135deg, #B8BFC4, #9AA3AB);"></div>
+    </div>
+    <p class="photo-note">Replace these placeholders with your photography &mdash; they'll shine here.</p>
+  </section>
+
+  <!-- Now Playing / Spotify -->
+  <section class="section section-spotify">
+    <div class="spotify-container">
+      <div class="spotify-label">What I'm listening to</div>
+      <iframe
+        style="border-radius:12px"
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
+        width="100%"
+        height="152"
+        frameBorder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </section>
+
   <!-- Contact -->
   <section class="section section-contact" id="contact">
-    <h2 class="contact-title">Let's work together</h2>
-    <p class="contact-sub">Have a project in mind? I'd love to hear about it.</p>
-    <a href="mailto:hello@vckpa.com" class="contact-email">hello@vckpa.com</a>
-    <div class="contact-links">
-      <a href="#" class="contact-social">LinkedIn</a>
-      <a href="#" class="contact-social">Dribbble</a>
-      <a href="#" class="contact-social">Resume</a>
+    <div class="contact-inner">
+      <span class="contact-label">04 &mdash; Get in Touch</span>
+      <h2 class="contact-title">Let's create<br><em>something great.</em></h2>
+      <a href="mailto:victoria@example.com" class="contact-email hoverable">victoria@example.com</a>
+      <div class="contact-links">
+        <a href="#" class="contact-social hoverable">LinkedIn</a>
+        <a href="#" class="contact-social hoverable">Behance</a>
+        <a href="#" class="contact-social hoverable">Instagram</a>
+        <a href="#" class="contact-social hoverable">Resume</a>
+      </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
-    <span>&copy; 2025 VCKPA</span>
+    <span>Designed by Victoria Komperda &copy; 2025</span>
   </footer>
 
   <script src="main.js"></script>
